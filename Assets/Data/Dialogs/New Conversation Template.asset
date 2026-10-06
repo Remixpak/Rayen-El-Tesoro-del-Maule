@@ -14,16 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ConversationTemplate
   conversationLines:
   - speakerName: Raul
-    DialogText: estoy estudiando proba
-    speakerSprite: {fileID: 0}
+    DialogText: hola profe silvana
+    speakerSprite: {fileID: 21300000, guid: 2b73bf2e6882431438782f981ab3c51c, type: 3}
   - speakerName: "Sim\xF3n"
     DialogText: yo estoy haciendo un sistema de dialogos
-    speakerSprite: {fileID: 0}
+    speakerSprite: {fileID: 21300000, guid: fcd8e95a985c95b42b099c6cc40aa327, type: 3}
   - speakerName: Raul
     DialogText: Wena ql
-    speakerSprite: {fileID: 0}
+    speakerSprite: {fileID: 21300000, guid: 2b73bf2e6882431438782f981ab3c51c, type: 3}
   - speakerName: Aguila durisima
     DialogText: 'Cocoooooo
 
 '
-    speakerSprite: {fileID: 0}
+    speakerSprite: {fileID: 21300000, guid: e39d983d8eef9934c840c14d829b5900, type: 3}

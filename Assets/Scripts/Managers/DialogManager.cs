@@ -7,6 +7,7 @@ public class DialogManager : MonoBehaviour
     //referencias a los textos de la UI
     [SerializeField] TextMeshProUGUI dialogText;
     [SerializeField] TextMeshProUGUI speakerNameText;
+    [SerializeField] UnityEngine.UI.Image speakerImage;
     //referencia al canvas completo
     [SerializeField] GameObject dialogCanvas;
     //variables
@@ -36,6 +37,7 @@ public class DialogManager : MonoBehaviour
         Line currentLine = lines.Dequeue();
         speakerNameText.text = currentLine.speakerName;
         dialogText.text = currentLine.DialogText;
+        speakerImage.sprite = currentLine.speakerSprite;
     }
 
     private void Update()
