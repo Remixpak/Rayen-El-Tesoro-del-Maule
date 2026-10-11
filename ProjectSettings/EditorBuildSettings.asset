@@ -8,6 +8,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Test/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/Test/AreaInitTest/Pueblo2.unity
+    guid: 2abc20679f580f249958c4699fcf6c17
+  - enabled: 1
+    path: Assets/Scenes/Test/AreaInitTest/Bosque.unity
+    guid: 2d6535419a500d147a4e546cff740bdb
+  - enabled: 1
+    path: Assets/Scenes/Test/AreaInitTest/Pueblo.unity
+    guid: afb38a04ef38cda4caf112c59654827a
+  - enabled: 1
+    path: Assets/Scenes/Test/AreaInitTest/Rio.unity
+    guid: 94c0849975f1d224c8a2a9438ab732a5
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
