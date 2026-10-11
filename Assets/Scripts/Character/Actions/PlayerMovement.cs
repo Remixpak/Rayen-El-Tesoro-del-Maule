@@ -10,6 +10,10 @@ public class PlayerMovement : MonoBehaviour
     private PlayerInputHandler _inputs; // referencia al script PlayerInputHandler que recibe los inputs del jugador
     private Transform cameraTransform; // referencia a la camara principal del juego, para poder mover al jugador en la direccion de la camara
 
+    private TargetLock targetLock; // referencia al script TargetLock que se encarga de fijar enemigos y apuntar hacia ellos
+
+
+
 
     // Variables de configuración del jugador y la cámara
     [Header("Player")]
@@ -26,6 +30,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float gamepadSensitivity = 150f; // sensibilidad del gamepad para mover la cámara
     [SerializeField] private float bottomClamp = -30f;      // es lo maximo que se puede mirar hacia arriba
     [SerializeField] private float topClamp = 60f;          // es lo maximo que se puede mirar hacia abajo
+    [SerializeField] private float lockCameraSmooth = 8f; // suavizado de la cámara al fijar un objetivo, para que no se mueva bruscamente
 
     private float verticalVelocity; // velocidad vertical del jugador, utilizada para aplicar la gravedad y el salto
     private float turnSmoothVelocity; // velocidad de suavizado para la rotación del jugador
@@ -37,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _char = GetComponent<CharacterController>();
         _inputs = GetComponent<PlayerInputHandler>();
+        targetLock = GetComponent<TargetLock>();
 
 
         // si no hay ninguna cámara con el tag MainCamera, se desactiva este script y se muestra un error en la consola
@@ -61,17 +67,44 @@ public class PlayerMovement : MonoBehaviour
         Cursor.visible = false;
     }
 
+    // el update se encarga de mover al jugador y aplicar la gravedad y el salto, ademas de fijar la rotación del jugador hacia el enemigo si hay un objetivo fijado
     private void Update()
     {
-        HandleCursorLock(); //bloqueamos el cursor al iniciar el movimiento
+        HandleCursorLock(); // Maneja el bloqueo del cursor al hacer clic en la pantalla
 
-
+        Vector2 move = _inputs.move; //
         Vector3 horizontal = Vector3.zero;
-        Vector2 move = _inputs.move;
+        bool locked = targetLock != null && targetLock.IsLocked;
 
-        //si el input de movimiento es mayor a un umbral, se calcula la dirección del movimiento y se aplica la rotación del jugador hacia esa dirección
-        if (move.sqrMagnitude > 0.15f * 0.15f)
+
+        //si el objetivo esta fijado, el jugador se mueve en strafe y mira al enemigo, si no esta fijado, el jugador se mueve libremente y mira hacia donde se mueve
+        if (locked)
         {
+            // Con objetivo: el personaje mira al enemigo (solo horizontal :p )
+            Vector3 toTarget = targetLock.AimPoint - transform.position;
+            toTarget.y = 0f;
+
+            //si la distancia al objetivo es mayor a 0.1, se rota el jugador hacia el objetivo suavemente
+            if (toTarget.sqrMagnitude > 0.01f)
+            {
+                float faceAngle = Mathf.Atan2(toTarget.x, toTarget.z) * Mathf.Rad2Deg;
+                float angle = Mathf.SmoothDampAngle(
+                    transform.eulerAngles.y, faceAngle, ref turnSmoothVelocity, turnSmoothTime);
+                transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            }
+
+            // si el jugador se mueve, se aplica la velocidad en la dirección de la cámara, para que se mueva en strafe y no hacia el enemigo
+            if (move.sqrMagnitude > 0.15f * 0.15f)
+            {
+                Vector3 input = Vector3.ClampMagnitude(new Vector3(move.x, 0f, move.y), 1f);
+                horizontal = Quaternion.Euler(0f, cameraTransform.eulerAngles.y, 0f) * input * playerSpeed;
+            }
+        }
+
+        //si no hay objetivo fijado, el jugador se mueve libremente y mira hacia donde se mueve
+        else if (move.sqrMagnitude > 0.15f * 0.15f)
+        {
+            // Sin objetivo el jugador tiene movimiento libre (igual que antes xd)
             float targetAngle = Mathf.Atan2(move.x, move.y) * Mathf.Rad2Deg
                                 + cameraTransform.eulerAngles.y;
             float angle = Mathf.SmoothDampAngle(
@@ -83,7 +116,7 @@ public class PlayerMovement : MonoBehaviour
             horizontal = dir * (playerSpeed * Mathf.Clamp01(move.magnitude));
         }
 
-        // Gravedad y salto
+        // manejamos la gravedad y salto del jugador si esta en el suelo
         if (_char.isGrounded && verticalVelocity < 0f)
             verticalVelocity = -2f;
 
@@ -93,27 +126,44 @@ public class PlayerMovement : MonoBehaviour
         _inputs.jump = false;
         verticalVelocity += playerGravity * Time.deltaTime;
 
-        // Un solo Move por frame
         _char.Move((horizontal + Vector3.up * verticalVelocity) * Time.deltaTime);
     }
 
+    // esta funcion se encarga de mover la cámara con el ratón o el gamepad, y de fijar la cámara sobre el enemigo si hay un objetivo fijado
     private void LateUpdate()
     {
-        //si no hay un objetivo de cámara de Cinemachine asignado, no se hace nada
+        // si no hay un objetivo de cámara de Cinemachine asignado, no se hace nada
         if (cinemachineCameraTarget == null) return;
 
-        Vector2 look = _inputs.look;
-
-        // si el input de la cámara es mayor a un umbral, se calcula la rotación de la cámara y se aplica al objetivo de cámara de Cinemachine
-        if (look.sqrMagnitude > 0.0001f)
+        if (targetLock != null && targetLock.IsLocked)
         {
-            // El ratón ya es un delta por frame; el stick necesita deltaTime
-            float sens = _inputs.LookIsGamepad
-                ? gamepadSensitivity * Time.deltaTime
-                : mouseSensitivity;
+            // Con objetivo: la cámara se centra sola en el enemigo
+            Vector3 dir = targetLock.AimPoint - cinemachineCameraTarget.position;
 
-            yaw += look.x * sens;
-            pitch -= look.y * sens; // ratón arriba = mirar arriba
+            if (dir.sqrMagnitude > 0.01f)
+            {
+                Vector3 e = Quaternion.LookRotation(dir).eulerAngles;
+                float targetYaw = e.y;
+                float targetPitch = Mathf.DeltaAngle(0f, e.x);
+
+                float t = 1f - Mathf.Exp(-lockCameraSmooth * Time.deltaTime);
+                yaw = Mathf.LerpAngle(yaw, targetYaw, t);
+                pitch = Mathf.Lerp(pitch, targetPitch, t);
+            }
+        }
+        else
+        {
+            // Sin objetivo = cámara libre
+            Vector2 look = _inputs.look;
+            if (look.sqrMagnitude > 0.0001f)
+            {
+                float sens = _inputs.LookIsGamepad
+                    ? gamepadSensitivity * Time.deltaTime
+                    : mouseSensitivity;
+
+                yaw += look.x * sens;
+                pitch -= look.y * sens;
+            }
         }
 
         pitch = Mathf.Clamp(pitch, bottomClamp, topClamp);

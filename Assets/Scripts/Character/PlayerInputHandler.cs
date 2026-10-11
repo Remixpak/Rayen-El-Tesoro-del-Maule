@@ -10,6 +10,8 @@ public class PlayerInputHandler : MonoBehaviour
     public Vector2 look; //almacena el input de la camara del jugador
     public bool jump; //almacena el input de salto del jugador
 
+    public bool LockOn; //almacena el input de lock on del jugador
+
     // actualiza el valor de move cada vez que se recibe un input de movimiento
     public void OnMove(InputValue value) => move = value.Get<Vector2>();
 
@@ -26,4 +28,10 @@ public class PlayerInputHandler : MonoBehaviour
     public bool LookIsGamepad =>
         Gamepad.current != null &&
         Gamepad.current.rightStick.ReadValue().sqrMagnitude > 0.0001f;
+
+
+    public void OnLockOn(InputValue value)
+    {
+        if(value.isPressed) LockOn = true;
+    }
 }
