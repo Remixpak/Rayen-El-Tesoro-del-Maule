@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(PlayerInputHandler))]
 
 public class PlayerAttack : MonoBehaviour
 {
@@ -25,7 +24,6 @@ public class PlayerAttack : MonoBehaviour
 
     private enum State { Idle, Windup, Active, Recovery } // Estados del ataque: Idle (inactivo), Windup (preparación), Active (activo), Recovery (recuperación)
 
-    private PlayerInputHandler inputs; 
     private State state = State.Idle;
     private float StateTimer = 0f; // el timer para pasar de un estado a otro
     private float nextAttackTime = 0f;
@@ -38,7 +36,6 @@ public class PlayerAttack : MonoBehaviour
 
     private void Awake()
     {
-        inputs = GetComponent<PlayerInputHandler>();
         triggerHash = Animator.StringToHash(attackTrigger);
 
         if(hitbox!=null)
@@ -49,25 +46,27 @@ public class PlayerAttack : MonoBehaviour
 
     private void Update()
     {
-        if (inputs.attack)
-        {
-            inputs.attack = false; // Resetear el input de ataque para evitar ataques continuos
-            if (state == State.Idle && Time.time >= nextAttackTime)
-                            {
-                StartAttack();
-            }
-        }
         if (state != State.Idle && !useAnimationEvents)
         {
             TickTimers();
         }
 
-        //solo comprobamos golpes mientras la hitbox este activa 
         if (state == State.Active)
         {
             DoHitCheck();
         }
+
     }
+
+
+    public void TryAttack()
+    {
+        if (state == State.Idle && Time.time >= nextAttackTime)
+        {
+            StartAttack();
+        }
+    }
+
 
     //funcion que se encarga de iniciar un nuevo ataque 
     private void StartAttack()

@@ -14,6 +14,8 @@ public class PlayerInputHandler : MonoBehaviour
 
     public bool attack; //almacena el input de ataque del jugador
 
+    public bool swtichWeapon; // almacena el input del cambio de arma del jugador
+
 
 
 
@@ -55,5 +57,15 @@ public class PlayerInputHandler : MonoBehaviour
             attack = true;
         }
 
+    }
+
+    //funcion par recibir el input del cambio de arma
+    public void OnSwitchWeapon(InputValue value)
+    {
+        //basicamente si el input es presionado se cambia el arma   
+        if (value.isPressed)
+        {
+            swtichWeapon = true;
+        }
     }
 }
