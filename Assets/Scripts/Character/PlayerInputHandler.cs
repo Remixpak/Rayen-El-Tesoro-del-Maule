@@ -12,6 +12,12 @@ public class PlayerInputHandler : MonoBehaviour
 
     public bool LockOn; //almacena el input de lock on del jugador
 
+    public bool attack; //almacena el input de ataque del jugador
+
+
+
+
+
     // actualiza el valor de move cada vez que se recibe un input de movimiento
     public void OnMove(InputValue value) => move = value.Get<Vector2>();
 
@@ -30,8 +36,24 @@ public class PlayerInputHandler : MonoBehaviour
         Gamepad.current.rightStick.ReadValue().sqrMagnitude > 0.0001f;
 
 
+    //funcion para recbiri el input de fijar enemigo
     public void OnLockOn(InputValue value)
     {
-        if(value.isPressed) LockOn = true;
+        // basicamente si el input es presionado el lock on es verdadero y se ejecuta
+        if (value.isPressed)
+        {
+            LockOn = true;
+        }
+    }
+
+    //funcion para recibir el input de ataque, si el input es presionado, se actualiza el valor de attack a true
+    public void OnAttack(InputValue value)
+    {
+        // basicamente si el input es presionado el ataque es verdaedero y se ejecuta
+        if (value.isPressed)
+        {
+            attack = true;
+        }
+
     }
 }
