@@ -20,6 +20,8 @@ public class TargetLock : MonoBehaviour
     private readonly Collider[] buffer = new Collider[32];
 
     public bool IsLocked => currentTarget != null;
+    
+    public Transform CurrentTargetTransform => currentTarget != null ? currentTarget.transform : null;
 
     // Punto al que apuntan la cámara y el personaje (centro del collider del enemigo)
     public Vector3 AimPoint => currentTarget != null

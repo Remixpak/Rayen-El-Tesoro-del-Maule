@@ -1,73 +1,73 @@
 using UnityEngine;
 using System.Collections;
 
-
-//este script se eencarga de la vida del enemigo y el feedback visual al golpearlo ademas de su muerte (todo super basico como prototipo mientras tenemos assets)
 public class EnemyHealth : MonoBehaviour, IDamageable
 {
-    [SerializeField] private float maxHealth = 100f; // vida maxima del enemigo
-    [SerializeField] private Renderer rend; // referencia al renderer del enemigo para cambiar el color al recibir daño(cuando se tenga)
-    [SerializeField] private Color hitColor = Color.red; // color que se mostrara al recibir daño 
-    [SerializeField] private float hitDuration = 0.1f; // duracion del color de golpe
+    [Header("Configuración")]
+    [SerializeField] private EnemyData enemyData; 
 
-    private float health; // vida actual del enemigo
-    private Color baseColor; // color base del enemigo
-    private Coroutine hit; // referencia a la corrutina del golpe para poder detenerla si se recibe otro golpe antes de que termine
+    private float currentHealth;
+    private Color baseColor;
+    private Coroutine hitCoroutine;
+    private Material mat;
+    private Renderer rend;
 
-    private Material mat; // referencia al material del enemigo para cambiar el color al recibir daño
-
-
+    // Propiedad pública por si otros scripts necesitan consultar los datos
+    public EnemyData Data => enemyData; 
 
     private void Awake()
     {
-        health = maxHealth;
-        if (rend == null) rend = GetComponentInChildren<Renderer>(); // si no se asigna el renderer en el inspector, se busca en los hijos del enemigo
-        if (rend != null) // si se encuentra el renderer se obtiene el color del material despues de recibir daño
+        if (enemyData == null)
+        {
+            Debug.LogError($"¡El enemigo {name} no tiene asignado un EnemyData!");
+            return;
+        }
+
+        // Inicializar vida con los datos del ScriptableObject
+        currentHealth = enemyData.maxHealth;
+
+        // Configuración del Renderer y Material
+        if (rend == null) rend = GetComponentInChildren<Renderer>();
+        if (rend != null)
         {
             mat = rend.material;
             baseColor = mat.color;
         }
     }
 
-    //funcion que maneja el daño que recibe el enemigo
     public void TakeDamage(float amount, Vector3 hitDirection)
     {
-        health -= amount;
-        Debug.Log($"{name} recibió {amount} de daño. Vida: {health}/{maxHealth}");
+        currentHealth -= amount;
+        Debug.Log($"{enemyData.enemyName} recibió {amount} de daño. Vida: {currentHealth}/{enemyData.maxHealth}");
 
-        //si el enemigo tiene un renderer este cambia de color al recibir daño y vuelve a su color original despues de un tiempo
+        // Feedback visual usando los datos del SO
         if (rend != null)
         {
-            if (hit != null)
+            if (hitCoroutine != null)
             {
-                StopCoroutine(hit);
-                hit = null;
+                StopCoroutine(hitCoroutine);
+                hitCoroutine = null;
             }
-            hit = StartCoroutine(Hit());
+            hitCoroutine = StartCoroutine(HitFeedback());
         }
 
-        //si el enemigo no tiene vida se muere basicamente
-        if (health <= 0)
+        if (currentHealth <= 0)
         {
             Die();
         }
-
     }
 
-    // corrutina que cambia el color del enemigo al recibir daño y vuelve a su color original despues de un tiempo
-    private IEnumerator Hit ()
+    private IEnumerator HitFeedback()
     {
-        mat.color = hitColor;
-        yield return new WaitForSeconds(hitDuration);
+        mat.color = enemyData.hitColor;
+        yield return new WaitForSeconds(enemyData.hitDuration);
         mat.color = baseColor;
-        hit = null;
+        hitCoroutine = null;
     }
 
-    //funcion para la muerte del enemigo
     private void Die()
     {
-        Debug.Log($"{name} ha muerto.");
+        Debug.Log($"{enemyData.enemyName} ha muerto.");
         Destroy(gameObject);
     }
-
 }
