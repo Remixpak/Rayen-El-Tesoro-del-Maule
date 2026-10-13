@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public enum CuatreroState
@@ -6,13 +7,17 @@ public enum CuatreroState
     Approach,   // Se acerca si el jugador está muy lejos
     Attack,     // Ataca al jugador con el raycast
     Reload,     // Se aleja para recargar si no tiene munición
-    Surround    // Rodea al jugador si el jugador apunta a otro enemigo
+    Surround,   // Rodea al jugador si el jugador apunta a otro enemigo
+    Patrol      // Patrulla por los puntos asignados si no ve al jugador
 }
 
 public class Cuatrero : MonoBehaviour
 {
     [Header("Configuración de Data")]
     [SerializeField] private CuatreroData cuatreroData;
+
+    [Header("Detección")]
+    [SerializeField] private float sightRange = 15f; // Distancia máxima a la que detecta al jugador
 
     [Header("Referencias")]
     [SerializeField] private Transform player; // Arrastras aquí el GameObject del Jugador
@@ -22,9 +27,14 @@ public class Cuatrero : MonoBehaviour
     [SerializeField] private LineRenderer shootLine;
     [SerializeField] private float shootDuration = 0.05f;
 
-    [Header("Animación (Opcional)")]
+    [Header("Animación (mas adelante)")]
     [SerializeField] private Animator animator;
     [SerializeField] private string shootTrigger = "Shoot";
+
+    [Header("Lista de posiciones para patrullaje")]
+    [SerializeField] private Transform[] patrolPoints;
+    private int currentPatrolIndex = 0; // Índice actual del punto de patrulla
+    [SerializeField] private float waypointTolerance = 0.5f;
 
     private CuatreroState currentState;
     private int currentAmmo;
@@ -76,30 +86,41 @@ public class Cuatrero : MonoBehaviour
     {
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        // 1. Verificar si el jugador está haciendo Lock a OTRO enemigo distinto de este
-        bool playerIsLockedOnSomeoneElse = playerTargetLock != null && 
-                                            playerTargetLock.IsLocked && 
-                                            playerTargetLock.CurrentTargetTransform != transform;
+        // Verificar si el jugador está a la vista (dentro del radio de visión y con los puntos de patrulla configurados)
+        bool playerInSight = distanceToPlayer <= sightRange;
 
-        // 2. Sin munición o recargando -> Huir/Recargar
+        // 1. Sin munición o recargando -> Huir/Recargar (siempre prioritario si está en combate)
         if (currentAmmo <= 0 || isReloading)
         {
             currentState = CuatreroState.Reload;
         }
-        // 3. Si el jugador está apuntando a otro enemigo -> Rodear
-        else if (playerIsLockedOnSomeoneElse)
+        // 2. Si el jugador NO está a la vista Y tenemos puntos de patrulla configurados -> Patrullar
+        else if (!playerInSight && patrolPoints != null && patrolPoints.Length > 0)
         {
-            currentState = CuatreroState.Surround;
+            currentState = CuatreroState.Patrol;
         }
-        // 4. Si el jugador está muy lejos -> Acercarse a hostigar
-        else if (distanceToPlayer > cuatreroData.attackRange)
-        {
-            currentState = CuatreroState.Approach;
-        }
-        // 5. De lo contrario, atacar
         else
         {
-            currentState = CuatreroState.Attack;
+            // 3. Verificar si el jugador está haciendo Lock a OTRO enemigo distinto de este
+            bool playerIsLockedOnSomeoneElse = playerTargetLock != null &&
+                                               playerTargetLock.IsLocked &&
+                                               playerTargetLock.CurrentTargetTransform != transform;
+
+            // 4. Si el jugador está apuntando a otro enemigo -> Rodear
+            if (playerIsLockedOnSomeoneElse)
+            {
+                currentState = CuatreroState.Surround;
+            }
+            // 5. Si el jugador está muy lejos (pero dentro del rango de visión) -> Acercarse a hostigar
+            else if (distanceToPlayer > cuatreroData.attackRange)
+            {
+                currentState = CuatreroState.Approach;
+            }
+            // 6. De lo contrario, atacar
+            else
+            {
+                currentState = CuatreroState.Attack;
+            }
         }
     }
 
@@ -121,6 +142,10 @@ public class Cuatrero : MonoBehaviour
 
             case CuatreroState.Surround:
                 Surround();
+                break;
+
+            case CuatreroState.Patrol:
+                Patrol();
                 break;
         }
     }
@@ -160,8 +185,8 @@ public class Cuatrero : MonoBehaviour
         }
 
         Vector3 origin = muzzle.position;
-        Vector3 direction = muzzle.forward; 
-        float range = cuatreroData.attackRange * 1.5f; 
+        Vector3 direction = muzzle.forward;
+        float range = cuatreroData.attackRange * 1.5f;
         Vector3 endPoint = origin + direction * range;
 
         if (Physics.Raycast(origin, direction, out RaycastHit hit, range, cuatreroData.hitMask, QueryTriggerInteraction.Ignore))
@@ -226,6 +251,33 @@ public class Cuatrero : MonoBehaviour
         }
     }
 
+    private void Patrol()
+    {
+        if (patrolPoints == null || patrolPoints.Length == 0) return;
+
+        Transform targetPoint = patrolPoints[currentPatrolIndex];
+        if (targetPoint == null) return;
+
+        Vector3 directionToPoint = (targetPoint.position - transform.position).normalized;
+        directionToPoint.y = 0;
+
+        if (directionToPoint != Vector3.zero)
+        {
+            transform.rotation = Quaternion.LookRotation(directionToPoint);
+        }
+
+        transform.position += directionToPoint * cuatreroData.moveSpeed * Time.deltaTime;
+
+        // Si llega cerca del punto actual, pasa al siguiente
+        if (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z),
+                             new Vector3(targetPoint.position.x, 0, targetPoint.position.z)) < 0.5f)
+        {
+            currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
+        }
+    }
+
+   
+
     private IEnumerator ReloadRoutine()
     {
         isReloading = true;
@@ -236,8 +288,14 @@ public class Cuatrero : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        if (muzzle == null) return;
-        Gizmos.color = Color.red;
-        Gizmos.DrawRay(muzzle.position, muzzle.forward * (cuatreroData != null ? cuatreroData.attackRange : 10f));
+        if (muzzle != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawRay(muzzle.position, muzzle.forward * (cuatreroData != null ? cuatreroData.attackRange : 10f));
+        }
+
+        // Visualizar el rango de visión en el editor
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, sightRange);
     }
 }
