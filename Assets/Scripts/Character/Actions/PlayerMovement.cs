@@ -175,7 +175,8 @@ public class PlayerMovement : MonoBehaviour
     private void HandleCursorLock()
     {
         // Al hacer clic en el juego, vuelve a bloquear el cursor
-        if (Cursor.lockState != CursorLockMode.Locked &&
+        if (Time.timeScale > 0f &&
+            Cursor.lockState != CursorLockMode.Locked &&
             Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
             Cursor.lockState = CursorLockMode.Locked;

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3152ddfbcd7b9654cbf2a49cc03e88c0, type: 3}
-  m_Name: NewEnemyData
+  m_Name: GenericEnemyData
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyName: Basic
   enemyPrefab: {fileID: 4748939925696167500, guid: ef7189a3907e5a2468dc7a4b5c1edebf, type: 3}
