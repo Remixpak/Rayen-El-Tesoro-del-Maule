@@ -1,24 +1,32 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+
+[RequireComponent(typeof(PlayerInput))]
 public class PlayerInputHandler : MonoBehaviour
 {
     //este script se encarga de recibir los inputs del jugador y almacenarlos en variables para que otros scripts puedan acceder a ellos
 
-    [Header("Input Values")]
+    [Header("Juego")]
     public Vector2 move; //almacena el input de movimiento del jugador
     public Vector2 look; //almacena el input de la camara del jugador
     public bool jump; //almacena el input de salto del jugador
-
     public bool LockOn; //almacena el input de lock on del jugador
-
     public bool attack; //almacena el input de ataque del jugador
-
     public bool swtichWeapon; // almacena el input del cambio de arma del jugador
 
+    [Header("Menus")]
+    public bool pause;//almacena el input para pausar el juego(P/start)
+    public bool openJournal; // Tab/select
+    public bool tabPrev;//almacena el input para cambiar el canvas UI del menu ( Q/LB)
+    public bool tabNext;// E/RB
+    public bool cancel; //esc/click derecho/ circulo o B
 
-
-
+    private PlayerInput playerInput;
+    private void Awake()
+    {
+        playerInput = GetComponent<PlayerInput>();
+    }
 
     // actualiza el valor de move cada vez que se recibe un input de movimiento
     public void OnMove(InputValue value) => move = value.Get<Vector2>();
@@ -68,4 +76,75 @@ public class PlayerInputHandler : MonoBehaviour
             swtichWeapon = true;
         }
     }
+
+    //funcion parar recibir el input del pausa
+    public void OnPause(InputValue value)
+    {
+        //si se presiona el boton de pausa el juego se pausa
+        if (value.isPressed)
+        {
+            pause = true;
+        }
+    }
+
+    //funcion para pasar pasar al siguiente canvas UI  estando en pausa 
+    public void OnTabPrev(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            Debug.Log("TabPrev recibido"); if (value.isPressed) tabPrev = true;
+            tabPrev = true; 
+        }
+    }
+
+    //funcion para pasar pasar al siguiente canvas UI  estando en pausa 
+    public void OnTabNext(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            Debug.Log("TabNext recibido"); if (value.isPressed) tabNext = true;
+            tabNext = true;
+        }
+    }
+
+    //funcion para cancelar acciones dentro del canvas
+    public void OnCancel(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            cancel = true;
+        }
+    }
+
+    //intercambiar entre modos del menu
+    public void SetMenuMode(bool menuOpen)
+    {
+        ResetInputs();
+        playerInput.SwitchCurrentActionMap(menuOpen ? "UI" : "Player");
+    }
+
+    public void OnOpenJournal(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            openJournal = true;
+        }
+    }
+
+
+
+    //resteamos las acciones del jugador al cerrar el menu
+    private void ResetInputs()
+    {
+        move = Vector2.zero;
+        look = Vector2.zero;
+        jump = false;
+        attack = false;
+        LockOn = false;
+        swtichWeapon = false;
+        pause = false;
+        tabPrev = false;
+        tabNext = false;
+    }
+
 }

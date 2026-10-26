@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MapUI : MonoBehaviour
+public class MapUI : BookSection
 {
     [Header("Referencia al Estado del Área")]
     [SerializeField] private CurrentAreaData currentArea;
