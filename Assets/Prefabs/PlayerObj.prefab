@@ -866,7 +866,7 @@ GameObject:
   - component: {fileID: 7421355784958304187}
   m_Layer: 0
   m_Name: PJ
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1011,6 +1011,11 @@ MonoBehaviour:
   LockOn: 0
   attack: 0
   swtichWeapon: 0
+  pause: 0
+  openJournal: 0
+  tabPrev: 0
+  tabNext: 0
+  cancel: 0
 --- !u!143 &4593718885922035847
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1085,6 +1090,12 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 0
+  allowSwitching: 1
+  mouseSwitchTreshold: 60
+  stickSwitchTreshold: 0.7
+  stickResetTreshhold: 0.3
+  switchCooldown: 0.3
+  switchConeAngle: 60
   marker: {fileID: 376382749789765682}
   markerHeightOffset: 0.5
 --- !u!114 &6733580328818649875
