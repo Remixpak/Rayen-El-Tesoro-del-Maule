@@ -243,9 +243,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: MainCamera
       objectReference: {fileID: 0}
+    - target: {fileID: 2632005132504095589, guid: a9bd74e1b85f2d4448806aac835e8919, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6963439834174187761, guid: a9bd74e1b85f2d4448806aac835e8919, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 17.079142
+      value: 17.079174
       objectReference: {fileID: 0}
     - target: {fileID: 6963439834174187761, guid: a9bd74e1b85f2d4448806aac835e8919, type: 3}
       propertyPath: m_LocalPosition.y
@@ -260,8 +264,28 @@ PrefabInstance:
       value: 0.018638484
       objectReference: {fileID: 0}
     - target: {fileID: 6963439834174187761, guid: a9bd74e1b85f2d4448806aac835e8919, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6963439834174187761, guid: a9bd74e1b85f2d4448806aac835e8919, type: 3}
       propertyPath: m_LocalRotation.y
       value: -0.9998263
+      objectReference: {fileID: 0}
+    - target: {fileID: 6963439834174187761, guid: a9bd74e1b85f2d4448806aac835e8919, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6963439834174187761, guid: a9bd74e1b85f2d4448806aac835e8919, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6963439834174187761, guid: a9bd74e1b85f2d4448806aac835e8919, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 204.594
+      objectReference: {fileID: 0}
+    - target: {fileID: 6963439834174187761, guid: a9bd74e1b85f2d4448806aac835e8919, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8136591456754769688, guid: a9bd74e1b85f2d4448806aac835e8919, type: 3}
       propertyPath: m_LocalPosition.x
@@ -441,8 +465,9 @@ GameObject:
   - component: {fileID: 508157263}
   - component: {fileID: 508157262}
   - component: {fileID: 508157264}
+  - component: {fileID: 508157265}
   m_Layer: 0
-  m_Name: Directional Light
+  m_Name: DayNightCicleManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -557,6 +582,23 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &508157265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 508157261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60ea9cf267f0fdb49a881ec28c6b3c33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DayNigthCycle
+  dayDurationMinutes: 0.5
+  nightDurationMinutes: 0.5
+  directionalLight: {fileID: 508157262}
+  usarRotacionInicialDelEditor: 1
+  rotacionPersonalizadaBase: {x: 50, y: -30, z: 0}
 --- !u!1 &585768850
 GameObject:
   m_ObjectHideFlags: 0
@@ -1045,6 +1087,10 @@ PrefabInstance:
     - target: {fileID: 3182304052346822568, guid: 1152cb573a46ece4db6fe3507c5954bb, type: 3}
       propertyPath: m_LocalPosition.y
       value: -5.33
+      objectReference: {fileID: 0}
+    - target: {fileID: 3793850683164726145, guid: 1152cb573a46ece4db6fe3507c5954bb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3916042500501410753, guid: 1152cb573a46ece4db6fe3507c5954bb, type: 3}
       propertyPath: m_Name

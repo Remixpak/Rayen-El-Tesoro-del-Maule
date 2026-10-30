@@ -1,5 +1,10 @@
 using UnityEngine;
 
+public enum TimeofDay
+{
+    Day,
+    Night
+}
 public class GameManager : MonoBehaviour
 {
     /*
@@ -11,12 +16,14 @@ public class GameManager : MonoBehaviour
     eso a grandes rasgos
      */
     public static GameManager Instance { get; private set; }
-
+    [HideInInspector] public string nextSpawnPointID = "";
     //variables de eventos
 
     private bool NgurifiluCompleted { get; set; }
     private bool PihuchenCompleted { get; set; }
     private bool JhonElderCompleted { get; set; }
+    
+    public TimeofDay currentTimeOfDay { get; set; }
     //añadir más según lo planificado pq ahora no me acuerdo, pero aqui se hace
 
     //variables de control
