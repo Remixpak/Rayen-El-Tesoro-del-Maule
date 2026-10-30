@@ -8,6 +8,8 @@ public class TargetLock : MonoBehaviour
 {
     [Header("Detección")]
     [SerializeField] private string enemyTag = "Enemy"; // tag que deben tener los enemigos para poder fijarlos
+    [SerializeField] private string npcTag = "NPC";
+    [SerializeField] private bool canTargetNpcs = true; //permite fijar a los npc
     [SerializeField] private float lockRange = 15f; // distancia maxima para fijar
     [SerializeField] private float breakRange = 20f; // distancia a la que se suelta solo
     [SerializeField, Range(10f, 180f)] private float maxViewAngle = 70f; // angulo maximo respecto a la camara
@@ -38,6 +40,11 @@ public class TargetLock : MonoBehaviour
 
     // devuelve true si hay un enemigo fijado
     public bool IsLocked => currentTarget != null;
+
+    public Collider CurrentTarget
+    {
+        get { return currentTarget; }
+    }
 
     // devuelve el transform del enemigo fijado (o null si no hay ninguno)
     public Transform CurrentTargetTransform => currentTarget != null ? currentTarget.transform : null;
@@ -139,7 +146,10 @@ public class TargetLock : MonoBehaviour
             Collider col = buffer[i];
 
             // si no tiene el tag de enemigo, lo saltamos
-            if (!col.CompareTag(enemyTag))
+            bool isEnemy = col.CompareTag(enemyTag);
+            bool isNpc = canTargetNpcs && col.CompareTag(npcTag);
+
+            if (!isEnemy && !isNpc)
             {
                 continue;
             }

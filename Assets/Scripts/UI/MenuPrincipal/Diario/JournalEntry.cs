@@ -4,6 +4,7 @@ using UnityEngine;
 //este script define una entrada del diario/libro (lo que incluye el titulo, texto e imagen) como un scriptableobject
 //se puede crear una entrada mediante el editor waju
 
+//recordar usar el tema de ulocked para desbloquear luego entradas en el diario al conversar con cierto npc o algo
 
 //opcion del menu para crear una entrada nueva al crear un nuevo objeto
 [CreateAssetMenu(fileName = "NewJournalEntry", menuName = "Game/Journal Entry")]

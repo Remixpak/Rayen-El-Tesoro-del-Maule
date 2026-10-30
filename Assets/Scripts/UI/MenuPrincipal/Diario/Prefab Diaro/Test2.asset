@@ -14,8 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JournalEntry
   id: 2
   title: Testeo2
-  body: 'Nicolas marambio en pelotas buscar
-
-'
+  body: Esto es un ejemplo de entrada de diario
   image: {fileID: 21300000, guid: ba179e78549bd7248bf2e06ec238b395, type: 3}
   unlockedFromStart: 1

@@ -14,6 +14,7 @@ public class PlayerInputHandler : MonoBehaviour
     public bool LockOn; //almacena el input de lock on del jugador
     public bool attack; //almacena el input de ataque del jugador
     public bool swtichWeapon; // almacena el input del cambio de arma del jugador
+    public bool interact;     // E / B o círculo
 
     [Header("Menus")]
     public bool pause;//almacena el input para pausar el juego(P/start)
@@ -132,6 +133,15 @@ public class PlayerInputHandler : MonoBehaviour
     }
 
 
+    public void OnInteract(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            interact = true;
+        }
+    }
+
+
 
     //resteamos las acciones del jugador al cerrar el menu
     private void ResetInputs()
@@ -145,6 +155,7 @@ public class PlayerInputHandler : MonoBehaviour
         pause = false;
         tabPrev = false;
         tabNext = false;
+        interact = false;
     }
 
 }

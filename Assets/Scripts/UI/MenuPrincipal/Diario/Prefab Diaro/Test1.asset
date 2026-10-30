@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JournalEntry
   id: 1
   title: Testeo
-  body: 'Matias segura es terrible weon
+  body: 'Cristobal segura es un bobo
 
 '
   image: {fileID: 21300000, guid: fcd8e95a985c95b42b099c6cc40aa327, type: 3}
