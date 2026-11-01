@@ -82,7 +82,7 @@ public class PlayerWeapons : MonoBehaviour
             gunModel.SetActive(type == WeaponType.gun);
         }
 
-        Debug.Log($"Se cambió el arma actual a: {type}"); // feedback para asegurarse que se cambio
+        //Debug.Log($"Se cambió el arma actual a: {type}"); // feedback para asegurarse que se cambio
 
         WeaponChanged?.Invoke(type); //lanzamos el evento para que otros scripts lo escuchen 
     }
