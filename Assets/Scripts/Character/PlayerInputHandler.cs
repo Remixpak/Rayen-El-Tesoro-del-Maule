@@ -44,7 +44,7 @@ public class PlayerInputHandler : MonoBehaviour
     // actualiza el valor de look cada vez que se recibe un input de la camara
     public void OnLook(InputValue value) => look = value.Get<Vector2>();
 
-    //funcion que se llama cuando se recibe un input de salto, si el input es presionado, se actualiza el valor de jump a true
+    //funcion que se llama cuando se recibe un input de salto, si el input es presionado, se actualiza el valor de jump a true (intercala entre salto/esquive dependiendo de la situacion)
     public void OnJump(InputValue value)
     {
         if (value.isPressed) jump = true; //si el input es presionado, se actualiza el valor de jump a true

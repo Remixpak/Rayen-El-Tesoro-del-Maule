@@ -9,7 +9,6 @@ public class PlayerMovement : MonoBehaviour
     private CharacterController _char; // referencia al CharacterController del jugador
     private PlayerInputHandler _inputs; // referencia al script PlayerInputHandler que recibe los inputs del jugador
     private Transform cameraTransform; // referencia a la camara principal del juego, para poder mover al jugador en la direccion de la camara
-
     private TargetLock targetLock; // referencia al script TargetLock que se encarga de fijar enemigos y apuntar hacia ellos
 
     // Variables de configuracion del jugador y la camara
@@ -21,28 +20,44 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float sprintSpeed = 8f; // velocidad del jugador al sprintar
     [SerializeField] private float sprintAcceleration = 20f; // que tan rapido acelera/frena al cambiar entre andar y sprintar
 
-    // Variables de configuracion de la camara
     [Header("Camara")]
     [SerializeField] private Transform cinemachineCameraTarget; // referencia al gameObject de cameraRoot que es hijo del PJ y que se encarga de mover la camara con Cinemachine
     [SerializeField] private float mouseSensitivity = 0.1f; // sensibilidad del raton para mover la camara
     [SerializeField] private float gamepadSensitivity = 150f; // sensibilidad del gamepad para mover la camara
     [SerializeField] private float bottomClamp = -30f; // es lo maximo que se puede mirar hacia arriba
     [SerializeField] private float topClamp = 60f; // es lo maximo que se puede mirar hacia abajo
-    [SerializeField] private float lockCameraSmooth = 8f; // suavizado de la camara al fijar un objetivo, para que no se mueva bruscamente
+    [SerializeField] private float lockCameraSmooth = 8f; // suavizado de la camara al fijar un objetivo
 
-    private float verticalVelocity; // velocidad vertical del jugador, utilizada para aplicar la gravedad y el salto
+    [Header("Esquive (con lock-on)")]
+    [SerializeField] private float dodgeDistance = 3f; // distancia total del paso
+    [SerializeField] private float dodgeDuration = 0.35f; // duracion (igualala a la animacion luego)
+    [SerializeField] private float dodgeCooldown = 0.3f; // espera antes de poder esquivar otra vez
+    [SerializeField] private AnimationCurve dodgeCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f); // para cuando tengamos animacion 
+    [SerializeField, Range(0f, 1f)] private float dodgeInvulnerableFraction = 0.6f; // frames de invulnerabilidad 
+
+
+    private float verticalVelocity; // velocidad vertical del jugador (gravedad y salto)
     private float turnSmoothVelocity; // velocidad de suavizado para la rotacion del jugador
-    private float yaw, pitch; // variables para almacenar la rotacion de la camara en los ejes Y (yaw) y X (pitch)
-    private float currentSpeed; // velocidad horizontal actual del jugador (se interpola para que el sprint sea suave)
+    private float yaw, pitch; // rotacion de la camara en los ejes Y y X
+    private float currentSpeed; // velocidad horizontal actual (interpolada para el sprint)
 
-    // Funciones de Unity
+    // Variables para el esquive 
+    private bool isDodging;
+    private float dodgeTimer;
+    private float dodgeCooldownTimer;
+    private Vector3 dodgeDir;
+
+    public bool IsDodging => isDodging;
+    public event System.Action<Vector2> DodgeStarted; // direccion local: x = lateral, y = adelante/atras
+
+
     private void Awake()
     {
         _char = GetComponent<CharacterController>();
         _inputs = GetComponent<PlayerInputHandler>();
         targetLock = GetComponent<TargetLock>();
 
-        // si no hay ninguna camara con el tag MainCamera, se desactiva este script y se muestra un error en la consola
+        // si no hay ninguna camara con el tag MainCamera, se desactiva el script
         if (Camera.main == null)
         {
             Debug.LogError("No hay ninguna camara con el tag MainCamera.", this);
@@ -51,63 +66,52 @@ public class PlayerMovement : MonoBehaviour
         }
         cameraTransform = Camera.main.transform;
 
-        // inicializamos la velocidad actual con la velocidad base
-        currentSpeed = playerSpeed;
+        currentSpeed = playerSpeed; // inicializamos la velocidad
     }
 
     private void Start()
     {
-        // Inicializa la rotacion de la camara si hay un objetivo de camara de Cinemachine asignado
+        // inicializa la rotacion de la camara si hay cameraTarget
         if (cinemachineCameraTarget != null)
             yaw = cinemachineCameraTarget.eulerAngles.y;
 
-        //desactivamos el cursor al iniciar el juego para que no se vea y se pueda mover la camara con el raton
+        // bloqueamos el cursor al iniciar
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-    // el update se encarga de mover al jugador y aplicar la gravedad y el salto, ademas de fijar la rotacion del jugador hacia el enemigo si hay un objetivo fijado
     private void Update()
     {
-        HandleCursorLock(); // Maneja el bloqueo del cursor al hacer clic en la pantalla
+        HandleCursorLock();
 
         Vector2 move = _inputs.move;
         Vector3 horizontal = Vector3.zero;
+        Vector3 dodgeMove = Vector3.zero;
         bool locked = targetLock != null && targetLock.IsLocked;
+        float speed = _inputs.sprint ? sprintSpeed : playerSpeed;
 
-        // calculamos la velocidad objetivo segun si estamos sprintando (solo si estamos en el suelo)
-        // y la interpolamos para que el cambio entre andar y correr sea suave
-        float targetSpeed = (_inputs.sprint && _char.isGrounded) ? sprintSpeed : playerSpeed;
-        currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, sprintAcceleration * Time.deltaTime);
+        dodgeCooldownTimer -= Time.deltaTime;
 
-        //si el objetivo esta fijado, el jugador se mueve en strafe y mira al enemigo, si no esta fijado, el jugador se mueve libremente y mira hacia donde se mueve
-        if (locked)
+        if (isDodging)
         {
-            // Con objetivo: el personaje mira al enemigo (solo horizontal :p )
-            Vector3 toTarget = targetLock.AimPoint - transform.position;
-            toTarget.y = 0f;
+            // durante el esquive: ignora el stick, pero sigue mirando al objetivo
+            if (locked) FaceTarget();
+            dodgeMove = StepDodge();
+        }
+        else if (locked)
+        {
+            FaceTarget();
 
-            //si la distancia al objetivo es mayor a 0.1, se rota el jugador hacia el objetivo suavemente
-            if (toTarget.sqrMagnitude > 0.01f)
-            {
-                float faceAngle = Mathf.Atan2(toTarget.x, toTarget.z) * Mathf.Rad2Deg;
-                float angle = Mathf.SmoothDampAngle(
-                    transform.eulerAngles.y, faceAngle, ref turnSmoothVelocity, turnSmoothTime);
-                transform.rotation = Quaternion.Euler(0f, angle, 0f);
-            }
-
-            // si el jugador se mueve, se aplica la velocidad en la direccion de la camara, para que se mueva en strafe y no hacia el enemigo
+            // movimiento en strafe (relativo a la camara)
             if (move.sqrMagnitude > 0.15f * 0.15f)
             {
                 Vector3 input = Vector3.ClampMagnitude(new Vector3(move.x, 0f, move.y), 1f);
-                horizontal = Quaternion.Euler(0f, cameraTransform.eulerAngles.y, 0f) * input * currentSpeed;
+                horizontal = Quaternion.Euler(0f, cameraTransform.eulerAngles.y, 0f) * input * speed;
             }
         }
-
-        //si no hay objetivo fijado, el jugador se mueve libremente y mira hacia donde se mueve
         else if (move.sqrMagnitude > 0.15f * 0.15f)
         {
-            // Sin objetivo el jugador tiene movimiento libre (igual que antes xd)
+            // sin objetivo: movimiento libre (mira hacia donde camina)
             float targetAngle = Mathf.Atan2(move.x, move.y) * Mathf.Rad2Deg
                                 + cameraTransform.eulerAngles.y;
             float angle = Mathf.SmoothDampAngle(
@@ -116,31 +120,34 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
             Vector3 dir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            horizontal = dir * (currentSpeed * Mathf.Clamp01(move.magnitude));
+            horizontal = dir * (speed * Mathf.Clamp01(move.magnitude));
         }
 
-        // manejamos la gravedad y salto del jugador si esta en el suelo
+        // gravedad base
         if (_char.isGrounded && verticalVelocity < 0f)
             verticalVelocity = -2f;
 
-        if (_inputs.jump && _char.isGrounded)
-            verticalVelocity = Mathf.Sqrt(playerJump * -2f * playerGravity);
+        // salto o esquive
+        if (_inputs.jump && _char.isGrounded && !isDodging)
+        {
+            if (locked) TryStartDodge(move); // con lock-on, el salto se convierte en esquive
+            else verticalVelocity = Mathf.Sqrt(playerJump * -2f * playerGravity); // sin lock-on, salto normal
+        }
 
         _inputs.jump = false;
         verticalVelocity += playerGravity * Time.deltaTime;
 
-        _char.Move((horizontal + Vector3.up * verticalVelocity) * Time.deltaTime);
+        // aplicamos el movimiento final combinando todo
+        _char.Move((horizontal + Vector3.up * verticalVelocity) * Time.deltaTime + dodgeMove);
     }
 
-    // esta funcion se encarga de mover la camara con el raton o el gamepad, y de fijar la camara sobre el enemigo si hay un objetivo fijado
     private void LateUpdate()
     {
-        // si no hay un objetivo de camara de Cinemachine asignado, no se hace nada
         if (cinemachineCameraTarget == null) return;
 
         if (targetLock != null && targetLock.IsLocked)
         {
-            // Con objetivo: la camara se centra sola en el enemigo
+            // con objetivo: la camara se centra sola en el enemigo
             Vector3 dir = targetLock.AimPoint - cinemachineCameraTarget.position;
 
             if (dir.sqrMagnitude > 0.01f)
@@ -156,7 +163,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            // Sin objetivo = camara libre
+            // sin objetivo = camara libre
             Vector2 look = _inputs.look;
             if (look.sqrMagnitude > 0.0001f)
             {
@@ -173,10 +180,9 @@ public class PlayerMovement : MonoBehaviour
         cinemachineCameraTarget.rotation = Quaternion.Euler(pitch, yaw, 0f);
     }
 
-    //funcion para bloquear el cursor al iniciar el juego y al hacer clic en la pantalla, para que no se vea y se pueda mover la camara con el raton
     private void HandleCursorLock()
     {
-        // Al hacer clic en el juego, vuelve a bloquear el cursor
+        // al hacer clic, bloquea el cursor de nuevo
         if (Time.timeScale > 0f &&
             Cursor.lockState != CursorLockMode.Locked &&
             Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
@@ -185,4 +191,76 @@ public class PlayerMovement : MonoBehaviour
             Cursor.visible = false;
         }
     }
+
+    // gira al jugador hacia el objetivo fijado (solo horizontal)
+    private void FaceTarget()
+    {
+        Vector3 toTarget = targetLock.AimPoint - transform.position;
+        toTarget.y = 0f;
+
+        if (toTarget.sqrMagnitude > 0.01f)
+        {
+            float faceAngle = Mathf.Atan2(toTarget.x, toTarget.z) * Mathf.Rad2Deg;
+            float angle = Mathf.SmoothDampAngle(
+                transform.eulerAngles.y, faceAngle, ref turnSmoothVelocity, turnSmoothTime);
+            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+        }
+    }
+
+    // inicia el esquive calculando la direccion y avisando a las animaciones
+    private void TryStartDodge(Vector2 move)
+    {
+        if (dodgeCooldownTimer > 0f) return;
+
+        if (move.sqrMagnitude > 0.15f * 0.15f)
+        {
+            // hacia donde apunta el stick, relativo a la camara
+            Vector3 input = new Vector3(move.x, 0f, move.y).normalized;
+            dodgeDir = Quaternion.Euler(0f, cameraTransform.eulerAngles.y, 0f) * input;
+        }
+        else
+        {
+            // sin stick: paso atras, alejandose del objetivo
+            Vector3 away = transform.position - targetLock.AimPoint;
+            away.y = 0f;
+            dodgeDir = away.sqrMagnitude > 0.01f ? away.normalized : -transform.forward;
+        }
+
+        isDodging = true;
+        dodgeTimer = 0f;
+
+        Vector3 local = transform.InverseTransformDirection(dodgeDir);
+        Vector2 localDir = new Vector2(local.x, local.z);
+
+        Debug.Log($"Esquive: direccion local {localDir}"); // quitar cuando este la animacion
+        DodgeStarted?.Invoke(localDir); // avisamos a la animacion
+    }
+
+    // avanza el esquive un frame segun la curva y devuelve cuanto desplazarse :p
+    private Vector3 StepDodge()
+    {
+        float previous = dodgeCurve.Evaluate(dodgeTimer / dodgeDuration);
+
+        dodgeTimer += Time.deltaTime;
+        float t = Mathf.Clamp01(dodgeTimer / dodgeDuration);
+        float current = dodgeCurve.Evaluate(t);
+
+        // al terminar, salimos del estado y aplicamos cooldown
+        if (t >= 1f)
+        {
+            isDodging = false;
+            dodgeCooldownTimer = dodgeCooldown;
+        }
+
+        return dodgeDir * ((current - previous) * dodgeDistance);
+    }
+
+    //funcion que devuelve si el jugador es invulnerable o no, se usa para el esquive 
+    // en un futuro cuando se tenga el sistema de vida del jugador recordar usar esta funcion para que el jugador no reciba daño mientras esquiva
+    public bool IsInvulnerable()
+    {
+        return isDodging && dodgeTimer < dodgeDuration * dodgeInvulnerableFraction;
+    }
+
+
 }
