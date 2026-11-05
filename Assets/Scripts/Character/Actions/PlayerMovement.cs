@@ -12,30 +12,28 @@ public class PlayerMovement : MonoBehaviour
 
     private TargetLock targetLock; // referencia al script TargetLock que se encarga de fijar enemigos y apuntar hacia ellos
 
-
-
-
-    // Variables de configuración del jugador y la cámara
+    // Variables de configuracion del jugador y la camara
     [Header("Player")]
     [SerializeField] private float playerSpeed = 5f; // velocidad del jugador
-    [SerializeField] private float playerJump = 1.2f;       // altura del salto en metros
-    [SerializeField] private float turnSmoothTime = 0.1f; // tiempo de suavizado para la rotación del jugador
+    [SerializeField] private float playerJump = 1.2f; // altura del salto en metros
+    [SerializeField] private float turnSmoothTime = 0.1f; // tiempo de suavizado para la rotacion del jugador
     [SerializeField] private float playerGravity = -20f; // gravedad aplicada al jugador
+    [SerializeField] private float sprintSpeed = 8f; // velocidad del jugador al sprintar
+    [SerializeField] private float sprintAcceleration = 20f; // que tan rapido acelera/frena al cambiar entre andar y sprintar
 
-    // Variables de configuración de la cámara
-
-    [Header("Cámara")]
-    [SerializeField] private Transform cinemachineCameraTarget; // referencia al gameObject de cameraRoot que es hijo del PJ y que se encarga de mover la cámara con Cinemachine
-    [SerializeField] private float mouseSensitivity = 0.1f; // sensibilidad del ratón para mover la cámara
-    [SerializeField] private float gamepadSensitivity = 150f; // sensibilidad del gamepad para mover la cámara
-    [SerializeField] private float bottomClamp = -30f;      // es lo maximo que se puede mirar hacia arriba
-    [SerializeField] private float topClamp = 60f;          // es lo maximo que se puede mirar hacia abajo
-    [SerializeField] private float lockCameraSmooth = 8f; // suavizado de la cámara al fijar un objetivo, para que no se mueva bruscamente
+    // Variables de configuracion de la camara
+    [Header("Camara")]
+    [SerializeField] private Transform cinemachineCameraTarget; // referencia al gameObject de cameraRoot que es hijo del PJ y que se encarga de mover la camara con Cinemachine
+    [SerializeField] private float mouseSensitivity = 0.1f; // sensibilidad del raton para mover la camara
+    [SerializeField] private float gamepadSensitivity = 150f; // sensibilidad del gamepad para mover la camara
+    [SerializeField] private float bottomClamp = -30f; // es lo maximo que se puede mirar hacia arriba
+    [SerializeField] private float topClamp = 60f; // es lo maximo que se puede mirar hacia abajo
+    [SerializeField] private float lockCameraSmooth = 8f; // suavizado de la camara al fijar un objetivo, para que no se mueva bruscamente
 
     private float verticalVelocity; // velocidad vertical del jugador, utilizada para aplicar la gravedad y el salto
-    private float turnSmoothVelocity; // velocidad de suavizado para la rotación del jugador
-    private float yaw, pitch; // variables para almacenar la rotación de la cámara en los ejes Y (yaw) y X (pitch)
-
+    private float turnSmoothVelocity; // velocidad de suavizado para la rotacion del jugador
+    private float yaw, pitch; // variables para almacenar la rotacion de la camara en los ejes Y (yaw) y X (pitch)
+    private float currentSpeed; // velocidad horizontal actual del jugador (se interpola para que el sprint sea suave)
 
     // Funciones de Unity
     private void Awake()
@@ -44,38 +42,43 @@ public class PlayerMovement : MonoBehaviour
         _inputs = GetComponent<PlayerInputHandler>();
         targetLock = GetComponent<TargetLock>();
 
-
-        // si no hay ninguna cámara con el tag MainCamera, se desactiva este script y se muestra un error en la consola
+        // si no hay ninguna camara con el tag MainCamera, se desactiva este script y se muestra un error en la consola
         if (Camera.main == null)
         {
-            Debug.LogError("No hay ninguna cámara con el tag MainCamera.", this);
+            Debug.LogError("No hay ninguna camara con el tag MainCamera.", this);
             enabled = false;
             return;
         }
         cameraTransform = Camera.main.transform;
-    }
 
+        // inicializamos la velocidad actual con la velocidad base
+        currentSpeed = playerSpeed;
+    }
 
     private void Start()
     {
-        // Inicializa la rotación de la cámara si hay un objetivo de cámara de Cinemachine asignado
+        // Inicializa la rotacion de la camara si hay un objetivo de camara de Cinemachine asignado
         if (cinemachineCameraTarget != null)
             yaw = cinemachineCameraTarget.eulerAngles.y;
 
-        //desactivamos el cursor al iniciar el juego para que no se vea y se pueda mover la cámara con el ratón
+        //desactivamos el cursor al iniciar el juego para que no se vea y se pueda mover la camara con el raton
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-    // el update se encarga de mover al jugador y aplicar la gravedad y el salto, ademas de fijar la rotación del jugador hacia el enemigo si hay un objetivo fijado
+    // el update se encarga de mover al jugador y aplicar la gravedad y el salto, ademas de fijar la rotacion del jugador hacia el enemigo si hay un objetivo fijado
     private void Update()
     {
         HandleCursorLock(); // Maneja el bloqueo del cursor al hacer clic en la pantalla
 
-        Vector2 move = _inputs.move; //
+        Vector2 move = _inputs.move;
         Vector3 horizontal = Vector3.zero;
         bool locked = targetLock != null && targetLock.IsLocked;
 
+        // calculamos la velocidad objetivo segun si estamos sprintando (solo si estamos en el suelo)
+        // y la interpolamos para que el cambio entre andar y correr sea suave
+        float targetSpeed = (_inputs.sprint && _char.isGrounded) ? sprintSpeed : playerSpeed;
+        currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, sprintAcceleration * Time.deltaTime);
 
         //si el objetivo esta fijado, el jugador se mueve en strafe y mira al enemigo, si no esta fijado, el jugador se mueve libremente y mira hacia donde se mueve
         if (locked)
@@ -93,11 +96,11 @@ public class PlayerMovement : MonoBehaviour
                 transform.rotation = Quaternion.Euler(0f, angle, 0f);
             }
 
-            // si el jugador se mueve, se aplica la velocidad en la dirección de la cámara, para que se mueva en strafe y no hacia el enemigo
+            // si el jugador se mueve, se aplica la velocidad en la direccion de la camara, para que se mueva en strafe y no hacia el enemigo
             if (move.sqrMagnitude > 0.15f * 0.15f)
             {
                 Vector3 input = Vector3.ClampMagnitude(new Vector3(move.x, 0f, move.y), 1f);
-                horizontal = Quaternion.Euler(0f, cameraTransform.eulerAngles.y, 0f) * input * playerSpeed;
+                horizontal = Quaternion.Euler(0f, cameraTransform.eulerAngles.y, 0f) * input * currentSpeed;
             }
         }
 
@@ -113,7 +116,7 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
             Vector3 dir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            horizontal = dir * (playerSpeed * Mathf.Clamp01(move.magnitude));
+            horizontal = dir * (currentSpeed * Mathf.Clamp01(move.magnitude));
         }
 
         // manejamos la gravedad y salto del jugador si esta en el suelo
@@ -129,15 +132,15 @@ public class PlayerMovement : MonoBehaviour
         _char.Move((horizontal + Vector3.up * verticalVelocity) * Time.deltaTime);
     }
 
-    // esta funcion se encarga de mover la cámara con el ratón o el gamepad, y de fijar la cámara sobre el enemigo si hay un objetivo fijado
+    // esta funcion se encarga de mover la camara con el raton o el gamepad, y de fijar la camara sobre el enemigo si hay un objetivo fijado
     private void LateUpdate()
     {
-        // si no hay un objetivo de cámara de Cinemachine asignado, no se hace nada
+        // si no hay un objetivo de camara de Cinemachine asignado, no se hace nada
         if (cinemachineCameraTarget == null) return;
 
         if (targetLock != null && targetLock.IsLocked)
         {
-            // Con objetivo: la cámara se centra sola en el enemigo
+            // Con objetivo: la camara se centra sola en el enemigo
             Vector3 dir = targetLock.AimPoint - cinemachineCameraTarget.position;
 
             if (dir.sqrMagnitude > 0.01f)
@@ -153,7 +156,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            // Sin objetivo = cámara libre
+            // Sin objetivo = camara libre
             Vector2 look = _inputs.look;
             if (look.sqrMagnitude > 0.0001f)
             {
@@ -170,8 +173,7 @@ public class PlayerMovement : MonoBehaviour
         cinemachineCameraTarget.rotation = Quaternion.Euler(pitch, yaw, 0f);
     }
 
-
-    //funcion para bloquear el cursor al iniciar el juego y al hacer clic en la pantalla, para que no se vea y se pueda mover la cámara con el ratón
+    //funcion para bloquear el cursor al iniciar el juego y al hacer clic en la pantalla, para que no se vea y se pueda mover la camara con el raton
     private void HandleCursorLock()
     {
         // Al hacer clic en el juego, vuelve a bloquear el cursor

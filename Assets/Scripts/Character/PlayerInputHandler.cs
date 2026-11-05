@@ -15,6 +15,8 @@ public class PlayerInputHandler : MonoBehaviour
     public bool attack; //almacena el input de ataque del jugador
     public bool swtichWeapon; // almacena el input del cambio de arma del jugador
     public bool interact;     // E / B o círculo
+    public bool sprint; //almacena el input de sprint del jugador
+    private InputAction sprintAction; 
 
     [Header("Menus")]
     public bool pause;//almacena el input para pausar el juego(P/start)
@@ -27,6 +29,13 @@ public class PlayerInputHandler : MonoBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+
+        sprintAction = playerInput.actions.FindAction("Sprint");
+    }
+
+    private void Update()
+    {
+        sprint = sprintAction != null && sprintAction.IsPressed();
     }
 
     // actualiza el valor de move cada vez que se recibe un input de movimiento
@@ -93,7 +102,6 @@ public class PlayerInputHandler : MonoBehaviour
     {
         if (value.isPressed)
         {
-            Debug.Log("TabPrev recibido"); if (value.isPressed) tabPrev = true;
             tabPrev = true; 
         }
     }
@@ -103,7 +111,6 @@ public class PlayerInputHandler : MonoBehaviour
     {
         if (value.isPressed)
         {
-            Debug.Log("TabNext recibido"); if (value.isPressed) tabNext = true;
             tabNext = true;
         }
     }
@@ -140,7 +147,6 @@ public class PlayerInputHandler : MonoBehaviour
             interact = true;
         }
     }
-
 
 
     //resteamos las acciones del jugador al cerrar el menu
