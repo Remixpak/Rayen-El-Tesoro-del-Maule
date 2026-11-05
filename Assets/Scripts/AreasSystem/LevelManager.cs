@@ -8,20 +8,20 @@ public class LevelManager : MonoBehaviour
     [System.Serializable]
     public class ExitData
     {
-        [Header("Configuración de Salida")]
+        [Header("Configuraciï¿½n de Salida")]
         public string exitName;
         public GameObject triggerObject;
         public string sceneToLoad;
 
         [Header("Sistema de Spawn")]
-        [Tooltip("Un ID único para esta salida (ej: 'DePuebloARio', 'DeBosqueARio')")]
+        [Tooltip("Un ID ï¿½nico para esta salida (ej: 'DePuebloARio', 'DeBosqueARio')")]
         public string spawnIDToTrigger;
 
-        [Tooltip("Transform o posición exacta donde aparecerá el jugador si llega a esta zona por esta puerta")]
+        [Tooltip("Transform o posiciï¿½n exacta donde aparecerï¿½ el jugador si llega a esta zona por esta puerta")]
         public Transform spawnPoint;
     }
 
-    [Header("Configuración General de Salidas")]
+    [Header("Configuraciï¿½n General de Salidas")]
     [SerializeField] protected ExitData[] mapExits;
 
     [Header("Spawn por Defecto (Si se entra por primera vez al juego)")]
@@ -34,6 +34,7 @@ public class LevelManager : MonoBehaviour
 
     protected virtual void Start()
     {
+        Debug.Log("Start de la escena: " + SceneManager.GetActiveScene().name);
         PosicionarJugador();
     }
 
@@ -45,7 +46,7 @@ public class LevelManager : MonoBehaviour
             {
                 if (!string.IsNullOrEmpty(exit.sceneToLoad))
                 {
-                    // 1. Guardamos en el GameManager global a qué punto vamos a llegar
+                    // 1. Guardamos en el GameManager global a quï¿½ punto vamos a llegar
                     if (GameManager.Instance != null)
                     {
                         GameManager.Instance.nextSpawnPointID = exit.spawnIDToTrigger;
@@ -78,7 +79,7 @@ public class LevelManager : MonoBehaviour
         {
             string targetID = GameManager.Instance.nextSpawnPointID;
             Debug.Log($"Buscando spawn con ID: {targetID}");
-            // Buscamos entre todas las salidas de este mapa cuál coincide con ese ID
+            // Buscamos entre todas las salidas de este mapa cuï¿½l coincide con ese ID
             foreach (var exit in mapExits)
             {
                 if (exit.spawnIDToTrigger == targetID && exit.spawnPoint != null)
@@ -92,13 +93,13 @@ public class LevelManager : MonoBehaviour
             GameManager.Instance.nextSpawnPointID = "";
         }
 
-        // Si no se encontró un spawn específico (por ejemplo, es la primera vez que abres el juego), usamos el por defecto
+        // Si no se encontrï¿½ un spawn especï¿½fico (por ejemplo, es la primera vez que abres el juego), usamos el por defecto
         if (targetSpawn == null)
         {
             targetSpawn = defaultSpawnPoint;
         }
 
-        // Movemos al jugador a la posición exacta (desactivando el CharacterController temporalmente si usas uno para evitar bugs de físicas)
+        // Movemos al jugador a la posiciï¿½n exacta (desactivando el CharacterController temporalmente si usas uno para evitar bugs de fï¿½sicas)
         CharacterController cc = player.GetComponent<CharacterController>();
         if (cc != null) cc.enabled = false;
 

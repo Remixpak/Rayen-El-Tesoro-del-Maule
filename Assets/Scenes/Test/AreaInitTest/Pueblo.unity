@@ -928,7 +928,12 @@ MonoBehaviour:
   - exitName: Rio
     triggerObject: {fileID: 293866686}
     sceneToLoad: Rio
-    spawnIDToTrigger: Entrance
+    spawnIDToTrigger: FromTown
+    spawnPoint: {fileID: 551997109}
+  - exitName: FromRio
+    triggerObject: {fileID: 293866686}
+    sceneToLoad: Rio
+    spawnIDToTrigger: DeRioAPueblo
     spawnPoint: {fileID: 551997109}
   defaultSpawnPoint: {fileID: 279564278}
 --- !u!1 &293866686
@@ -1904,7 +1909,7 @@ Transform:
   m_GameObject: {fileID: 551997108}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 506.29, y: 0.00002, z: -1177.19}
+  m_LocalPosition: {x: 506.29, y: 0.00002, z: -1177.43}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4826,6 +4831,10 @@ PrefabInstance:
     - target: {fileID: 3916042500501410753, guid: 1152cb573a46ece4db6fe3507c5954bb, type: 3}
       propertyPath: m_Name
       value: PlayerObj
+      objectReference: {fileID: 0}
+    - target: {fileID: 3916042500501410753, guid: 1152cb573a46ece4db6fe3507c5954bb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
