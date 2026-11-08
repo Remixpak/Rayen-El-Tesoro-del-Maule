@@ -15,7 +15,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private MenuScreen bookScreen; // pantalla del libro/diario (Tab / Select)
 
     [Header("Menú principal (opcional)")]
-    private MenuScreen rootScreen; // si se asigna, siempre esta abierta y no se cierra (basicamente abre siempre un menu al iniciar, podria servir con el libro para tutorial o no se)
+    [SerializeField] private MenuScreen rootScreen; // si se asigna, siempre esta abierta y no se cierra (basicamente abre siempre un menu al iniciar, podria servir con el libro para tutorial o no se)
 
     private readonly List<MenuScreen> stack = new List<MenuScreen>(); // pila de pantallas abiertas (la de arriba es la que se ve)
     private bool inMenuMode; // para saber si ya estamos en modo menu (y no repetir la llamada a SetMenuMode)
@@ -70,6 +70,7 @@ public class MenuManager : MonoBehaviour
         {
             inputs.tabPrev = false;
             inputs.tabNext = false;
+            inputs.advance = false;
             inputs.cancel = false;
             return;
         }
@@ -86,6 +87,19 @@ public class MenuManager : MonoBehaviour
         {
             inputs.tabNext = false;
             Current.OnTabNext();
+        }
+
+        // si el jugador pulsa avanzar (Espacio / Enter / A / clic), avisamos a la pantalla actual (lo usa el dialogo)
+        if (inputs.advance)
+        {
+            inputs.advance = false;
+            Current.OnAdvance();
+
+            // la pantalla pudo cerrarse al avanzar (por ejemplo, al terminar un dialogo), asi que ya no hay Current
+            if (!IsOpen)
+            {
+                return;
+            }
         }
 
         // si el jugador pulsa cancelar/volver
@@ -110,6 +124,12 @@ public class MenuManager : MonoBehaviour
             return;
         }
 
+        // si la pantalla actual bloquea los atajos (el dialogo, por ejemplo), no hacemos nada
+        if (Current != null && Current.BlocksShortcuts)
+        {
+            return;
+        }
+
         // si hay algo abierto, cerramos todo; si no, abrimos la pantalla de pausa
         if (IsOpen)
         {
@@ -126,6 +146,12 @@ public class MenuManager : MonoBehaviour
     {
         // si hay pantalla raiz, no hacemos nada
         if (rootScreen != null)
+        {
+            return;
+        }
+
+        // si la pantalla actual bloquea los atajos (el dialogo, por ejemplo), no hacemos nada
+        if (Current != null && Current.BlocksShortcuts)
         {
             return;
         }
@@ -149,7 +175,6 @@ public class MenuManager : MonoBehaviour
         // si la pantalla es null, avisamos y no hacemos nada
         if (screen == null)
         {
-            Debug.LogError("MenuManager: se intentó abrir una pantalla null.", this);
             return;
         }
 
@@ -266,11 +291,13 @@ public class MenuManager : MonoBehaviour
 
         if (backdrop != null)
         {
-            backdrop.SetActive(open); // mostramos u ocultamos el fondo oscuro
+            backdrop.SetActive(open && Current.ShowsBackdrop); // mostramos el fondo oscuro solo si la pantalla actual lo quiere
         }
 
-        Cursor.lockState = open ? CursorLockMode.None : CursorLockMode.Locked; // liberamos o bloqueamos el cursor
-        Cursor.visible = open;
+        // el cursor se libera solo si la pantalla actual lo necesita (el dialogo, por ejemplo, lo deja oculto y bloqueado)
+        bool freeCursor = open && Current.ShowsCursor;
+        Cursor.lockState = freeCursor ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = freeCursor;
 
         // avisamos al input de que estamos en modo menu o no (solo cuando cambia)
         if (open != inMenuMode)
@@ -280,7 +307,7 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    // por seguridad: si se sale de la escena con un menu abierto, no dejamos el juego congelado
+    // por seguridad si se sale de la escena con un menu abierto, no dejamos el juego congelado :p
     private void OnDestroy()
     {
         Time.timeScale = 1f;

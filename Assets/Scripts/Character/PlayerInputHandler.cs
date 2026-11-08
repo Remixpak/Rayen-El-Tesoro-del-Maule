@@ -25,6 +25,8 @@ public class PlayerInputHandler : MonoBehaviour
     public bool tabNext;// E/RB
     public bool cancel; //esc/click derecho/ circulo o B
 
+    public bool advance;  // Espacio / Enter / A / clic (avanza el dialogo en el dialogmenu)
+
     private PlayerInput playerInput;
     private void Awake()
     {
@@ -148,6 +150,14 @@ public class PlayerInputHandler : MonoBehaviour
         }
     }
 
+    public void OnAdvance(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            advance = true;
+        }
+    }
+
 
     //resteamos las acciones del jugador al cerrar el menu
     private void ResetInputs()
@@ -162,6 +172,7 @@ public class PlayerInputHandler : MonoBehaviour
         tabPrev = false;
         tabNext = false;
         interact = false;
+        advance = false;
     }
 
 }

@@ -14,6 +14,9 @@ public class PlayerInteractor : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool logAvailability = true; // escribe en consola cuando aparece la opcion de hablar
 
+    [Header("Dialogo")]
+    [SerializeField] private DialogManager dialogManager; // referencia al sistema de dialogo (opcional): si se asigna, abre el dialogo automaticamente
+
     private PlayerInputHandler inputs; // referencia al input del jugador
     private TargetLock targetLock; // referencia al lock on (opcional): si hay un NPC fijado, tiene prioridad
     private GameObject currentNpc; // NPC con el que se puede hablar ahora mismo (o null)
@@ -121,8 +124,16 @@ public class PlayerInteractor : MonoBehaviour
     // se llama cuando el jugador habla con un NPC
     private void Talk(GameObject npc)
     {
-        Debug.Log("Se ha hablado con el NPC (" + npc.name + ")", npc);
-        TalkedToNpc?.Invoke(npc); // avisamos a quien escuche (sistema de dialogo)
+        TalkedToNpc?.Invoke(npc);
+
+        NpcDialog dialog = npc.GetComponentInParent<NpcDialog>();
+
+        if (dialog == null || dialogManager == null)
+        {
+            return;
+        }
+
+        dialogManager.getConversation(dialog.Conversation);
     }
 
     // escribe en consola cuando aparece o desaparece la opcion de hablar (solo si logAvailability esta activo)
@@ -135,12 +146,6 @@ public class PlayerInteractor : MonoBehaviour
         }
 
         lastLoggedNpc = currentNpc;
-
-        // si hay un NPC disponible, lo logueamos
-        if (currentNpc != null)
-        {
-            Debug.Log("Se puede hablar con " + currentNpc.name + " (E / B)", currentNpc);
-        }
     }
 
     // dibuja el rango de interaccion en el editor (solo para depurar)
