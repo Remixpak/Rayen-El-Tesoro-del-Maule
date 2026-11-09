@@ -11,12 +11,16 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private Coroutine hitCoroutine;
     private Material mat;
     private Renderer rend;
+    private bool isDead = false;
+    private DropTable dropTable;
 
     // Propiedad pública por si otros scripts necesitan consultar los datos
     public EnemyData Data => enemyData; 
 
     private void Awake()
     {
+        dropTable = GetComponent<DropTable>();
+
         if (enemyData == null)
         {
             Debug.LogError($"¡El enemigo {name} no tiene asignado un EnemyData!");
@@ -37,6 +41,12 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     public void TakeDamage(float amount, Vector3 hitDirection)
     {
+
+        if (isDead)
+        {
+            return;
+        }
+
         currentHealth -= amount;
         Debug.Log($"{enemyData.enemyName} recibió {amount} de daño. Vida: {currentHealth}/{enemyData.maxHealth}");
 
@@ -67,7 +77,13 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     private void Die()
     {
-        Debug.Log($"{enemyData.enemyName} ha muerto.");
+        isDead = true;
+
+        if (dropTable != null)
+        {
+            dropTable.Drop(transform.position);
+        }
+
         Destroy(gameObject);
     }
 }
