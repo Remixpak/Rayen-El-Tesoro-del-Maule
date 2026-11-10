@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
 
-
-//este script se encargara de guardar los datos del juego(uso a futuro)
-
-
 [Serializable]
 public class GameData
 {
     public List<string> unlockedJournalIds = new List<string>();
-    
 
-    //nada por el momento
+    // Estado del jugador
+    public bool statsInitialized; // false hasta que PlayerStats aplica los valores iniciales de una partida nueva
+    public int health;
+    public int ammo;
+    public int gold;
+
+   
 }

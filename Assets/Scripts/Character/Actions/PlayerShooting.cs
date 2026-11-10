@@ -26,11 +26,14 @@ public class PlayerShooting : MonoBehaviour
     private float nextFireTime;// momento en el que se puede volver a disparar 
     private int triggerHash; // hash del trigger animator 
     private Coroutine shotRoutine; //referencia a la corrutina que oculta la linea de disparo
+    private PlayerStats stats; //si no existe el jugador, el arma tiene municion infinita
+
 
 
 
     private void Awake()
     {
+        stats = GetComponent<PlayerStats>();
         targetLock = GetComponent<TargetLock>(); //referencia al target para apuntar el disparo
         triggerHash = Animator.StringToHash(shootTrigger);//calculamos el hash del disparo una sola vez 
 
@@ -50,6 +53,13 @@ public class PlayerShooting : MonoBehaviour
         //si aun no pasa el cooldwown no se dispara 
         if(Time.time < nextFireTime)
         {
+            return;
+        }
+
+        //si no tenemos municion no se dispara 
+        if (stats != null && !stats.TryUseAmmo())
+        {
+            Debug.Log("[Disparo] Sin munición");
             return;
         }
 
