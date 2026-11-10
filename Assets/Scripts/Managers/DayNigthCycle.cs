@@ -25,6 +25,9 @@ public class DayNightController : MonoBehaviour
     private bool isDayTime = true;
     private Vector3 baseRotation;
 
+    //cositas que agregue para hacer la conexion con el CLOCKUI 
+    public bool IsDayTime => isDayTime; //propiedad para que otros scripts puedan consultar si es dia o noceh
+    public float TimeProgress => currentPhaseDuration > 0 ? (currentTime / currentPhaseDuration) : 0f;
     private void Awake()
     {
         if (Instance != null && Instance != this)
