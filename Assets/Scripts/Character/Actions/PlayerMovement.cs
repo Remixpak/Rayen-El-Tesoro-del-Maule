@@ -18,7 +18,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float turnSmoothTime = 0.1f; // tiempo de suavizado para la rotacion del jugador
     [SerializeField] private float playerGravity = -20f; // gravedad aplicada al jugador
     [SerializeField] private float sprintSpeed = 8f; // velocidad del jugador al sprintar
-    [SerializeField] private float sprintAcceleration = 20f; // que tan rapido acelera/frena al cambiar entre andar y sprintar
+
+    //[SerializeField] private float sprintAcceleration = 20f; // que tan rapido acelera/frena al cambiar entre andar y sprintar (no lo usaremos por el momento)
 
     [Header("Camara")]
     [SerializeField] private Transform cinemachineCameraTarget; // referencia al gameObject de cameraRoot que es hijo del PJ y que se encarga de mover la camara con Cinemachine

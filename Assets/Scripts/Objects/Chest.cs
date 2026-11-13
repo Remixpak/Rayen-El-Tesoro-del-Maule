@@ -1,15 +1,21 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-// plantilla de cofre, falta incoporar la recompensa pero era para unirlo al interactPrompt 
+// cofre: al abrirlo reproduce la animacion y, tras un momento, saca la recompensa desde su centro
 public class Chest : MonoBehaviour
 {
     [Header("Animación")]
     [SerializeField] private Animator animator; // si se deja vacio, busca uno en los hijos
-    [SerializeField] private string openTrigger = "Open"; // nombre del trigger del Animator
+    [SerializeField] private string openTrigger = "Open";
 
     [Header("Recompensa")]
-    [SerializeField] private UnityEvent onOpened; // aqui se conectara el script de loot desde el Inspector
+    [SerializeField] private DropTable dropTable; // si se deja vacio, busca uno en este objeto
+    [SerializeField] private Transform lootPoint; // punto vacio en el centro del cofre, donde aparece el premio
+    [SerializeField] private float dropDelay = 0.5f; // espera para que el premio salga cuando la tapa ya se abrio
+
+    [Header("Eventos")]
+    [SerializeField] private UnityEvent onOpened; // para cualquier otra cosa que quieras disparar al abrir
 
     public bool IsOpen { get; private set; }
 
@@ -25,12 +31,17 @@ public class Chest : MonoBehaviour
         {
             animator = GetComponentInChildren<Animator>();
         }
+
+        if (dropTable == null)
+        {
+            dropTable = GetComponent<DropTable>();
+        }
     }
 
     // lo llama PlayerInteractor cuando el jugador pulsa interactuar
     public void Open()
     {
-        if (IsOpen) 
+        if (IsOpen)
         {
             return;
         }
@@ -42,7 +53,37 @@ public class Chest : MonoBehaviour
             animator.SetTrigger(openTrigger);
         }
 
-        Debug.Log($"Cofre abierto: {name}", this); // temporal, hasta conectar el loot
         onOpened?.Invoke();
+        StartCoroutine(DropAfterDelay());
+    }
+
+    private IEnumerator DropAfterDelay()
+    {
+        yield return new WaitForSeconds(dropDelay);
+        SpawnLoot();
+    }
+
+    // tambien se puede llamar desde un Animation Event del clip, en el frame exacto en que se abre la tapa
+    public void SpawnLoot()
+    {
+        if (dropTable == null)
+        {
+            Debug.LogWarning($"Chest '{name}': no tiene DropTable asignado.", this);
+            return;
+        }
+
+        Vector3 position = lootPoint != null ? lootPoint.position : transform.position + Vector3.up * 0.5f;
+        dropTable.Drop(position);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (lootPoint == null)
+        {
+            return;
+        }
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(lootPoint.position, 0.15f);
     }
 }

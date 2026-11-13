@@ -3,6 +3,8 @@ using UnityEngine;
 
 // gestiona la vida, la municion y el oro del jugador
 // los valores viven en GameSession.Data (sobreviven entre escenas y se podran guardar) y este script avisa con eventos cuando cambian
+
+//falta el metodo de gastar oro y de implementar bien el recibir daño + la logica de lo que pasa al morir
 public class PlayerStats : MonoBehaviour
 {
     [Header("Capacidad máxima")]
@@ -25,7 +27,7 @@ public class PlayerStats : MonoBehaviour
 
     public int Health
     {
-        get { return GameSession.Data.health; }
+        get { return GameManager.Data.health; }
     }
 
     public int MaxHealth
@@ -35,7 +37,7 @@ public class PlayerStats : MonoBehaviour
 
     public int Ammo
     {
-        get { return GameSession.Data.ammo; }
+        get { return GameManager.Data.ammo; }
     }
 
     public int MaxAmmo
@@ -45,12 +47,12 @@ public class PlayerStats : MonoBehaviour
 
     public int Gold
     {
-        get { return GameSession.Data.gold; }
+        get { return GameManager.Data.gold; }
     }
 
     public bool IsDead
     {
-        get { return GameSession.Data.health <= 0; }
+        get { return GameManager.Data.health <= 0; }
     }
 
     private void OnValidate()
@@ -64,7 +66,7 @@ public class PlayerStats : MonoBehaviour
 
     private void Awake()
     {
-        GameData data = GameSession.Data;
+        GameData data = GameManager.Data;
 
         if (!data.statsInitialized)
         {
@@ -116,7 +118,7 @@ public class PlayerStats : MonoBehaviour
     // los enemigos llamaran a este metodo para hacer daño al jugador
     public void TakeDamage(int amount)
     {
-        GameData data = GameSession.Data;
+        GameData data = GameManager.Data;
 
         if (amount <= 0 || data.health <= 0)
         {
@@ -135,7 +137,7 @@ public class PlayerStats : MonoBehaviour
     //metodo de para curarse 
     public void Heal(int amount)
     {
-        GameData data = GameSession.Data;
+        GameData data = GameManager.Data;
 
         // un jugador muerto no se cura
         if (amount <= 0 || data.health <= 0)
@@ -152,7 +154,7 @@ public class PlayerStats : MonoBehaviour
     // metodo para gastar la municion 
     public bool TryUseAmmo(int amount = 1)
     {
-        GameData data = GameSession.Data; // guardamos la referencia para cuando hagamos el guardado
+        GameData data = GameManager.Data; // guardamos la referencia para cuando hagamos el guardado
 
         if (amount <= 0 || data.ammo < amount)
         {
@@ -167,7 +169,7 @@ public class PlayerStats : MonoBehaviour
     //metodo para agregar municion 
     public void AddAmmo(int amount)
     {
-        GameData data = GameSession.Data;
+        GameData data = GameManager.Data;
 
         if (amount <= 0)
         {
@@ -187,14 +189,14 @@ public class PlayerStats : MonoBehaviour
             return;
         }
 
-        GameSession.Data.gold += amount;
-        GoldChanged?.Invoke(GameSession.Data.gold);
+        GameManager.Data.gold += amount;
+        GoldChanged?.Invoke(GameManager.Data.gold);
     }
 
     // para la "tienda" que tendremos en un futuro con los santos del mar
     public bool TrySpendGold(int amount)
     {
-        GameData data = GameSession.Data;
+        GameData data = GameManager.Data;
 
         if (amount <= 0 || data.gold < amount)
         {

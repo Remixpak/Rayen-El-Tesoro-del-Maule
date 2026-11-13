@@ -3,7 +3,7 @@ using UnityEngine;
 //script que se usa para cargar datos en una sesion
 
 //para desbloquear entradas del diario se usa GameSession.UnlockJournal(entrada);
-
+// este script baiscamente es la capa de persistencia donde vive el gamedata y se realizan operaciones que tienen que ver con el guardado y la carga de datos, como desbloquear entradas del diario, o crear una nueva partida
 public static class GameSession
 {
     public static GameData Data { get; private set; } = new GameData();
