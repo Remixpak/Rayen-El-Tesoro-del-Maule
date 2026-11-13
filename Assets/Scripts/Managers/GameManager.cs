@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     private bool NgurifiluCompleted { get; set; }
     private bool PihuchenCompleted { get; set; }
     private bool JhonElderCompleted { get; set; }
-    
+
     public TimeofDay currentTimeOfDay { get; set; }
     //añadir más según lo planificado pq ahora no me acuerdo, pero aqui se hace
 
@@ -33,14 +33,22 @@ public class GameManager : MonoBehaviour
     debe hacerse en el respectivo manager de la escena.
     podemos usarla para saber en que parte dibujar la ubicación del jugador en el mapa, o para saber que eventos mostrar en la escena.
      */
-    private int gold { get; set; }//cantidad de oro que tiene el jugador, se puede modificar desde cualquier parte del juego y se mantiene entre escenas.
 
+    public static GameData Data => GameSession.Data; // accedemos a los datos de la partida desde el gamemanager
+
+
+    //ya ahi hice bien la relacion entre el gamemanager y el gamedata donde ahora el gamemanger es el portero que da acceso a los datos hacia player stats por ejemplo
+    //si no es lo que querias no me reti xfa 
+    //atributos del jugador
+    public static int Gold => Data.gold;
+    public static int Health => Data.health;
+    public static int Ammo => Data.ammo;
 
 
 
     private void Awake()
     {
-        if(Instance != null && Instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(this.gameObject);
         }
@@ -50,5 +58,5 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
     }
-    
+
 }
