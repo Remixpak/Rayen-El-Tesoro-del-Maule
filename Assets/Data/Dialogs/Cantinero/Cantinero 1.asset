@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7ebfa04b912309468024c8b6fce7787, type: 3}
+  m_Name: Cantinero 1
+  m_EditorClassIdentifier: Assembly-CSharp::ConversationTemplate
+  conversationLines:
+  - speakerName: Cantinero
+    DialogText: "As\xED que eres nueva en la regi\xF3n \xBFeh?"
+    speakerSprite: {fileID: 0}
+  - speakerName: "Ray\xE9n"
+    DialogText: "Estoy en busca un tesoro, dicen que est\xE1 en un barco que se hundi\xF3
+      hace no mucho."
+    speakerSprite: {fileID: 0}
+  - speakerName: Cantinero
+    DialogText: "La verdad... no hay mucho que te pueda decir sobre eso, s\xF3lo
+      te recomiendo cuidarte."
+    speakerSprite: {fileID: 0}
+  - speakerName: "Ray\xE9n"
+    DialogText: "\xBFpor qu\xE9 lo dices?"
+    speakerSprite: {fileID: 0}
+  - speakerName: Cantinero
+    DialogText: "de noche pasan cosar raras en el r\xEDo, dicen que se ha visto a
+      una mujer vagando por ah\xED."
+    speakerSprite: {fileID: 0}
+  - speakerName: "Ray\xE9n"
+    DialogText: "Lo del tesoro que busco no es muy normal que digamos, quiz\xE1 preguntarle
+      a ella sea una buena opci\xF3n"
+    speakerSprite: {fileID: 0}

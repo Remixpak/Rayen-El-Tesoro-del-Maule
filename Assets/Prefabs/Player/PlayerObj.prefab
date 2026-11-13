@@ -2323,7 +2323,7 @@ GameObject:
   - component: {fileID: 2230970321832456419}
   m_Layer: 0
   m_Name: RayenPJ
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2661,6 +2661,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteractor
   npcTag: NPC
+  chestTag: Chest
   interactRange: 2.5
   interactMask:
     serializedVersion: 2
@@ -3539,8 +3540,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8673939874118932799}
   m_Layer: 0
-  m_Name: PlayerOBJ
-  m_TagString: Untagged
+  m_Name: PlayerObj
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
