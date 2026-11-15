@@ -29,7 +29,7 @@ public class PlayerWeapons : MonoBehaviour
     }
 
     //al empezar el juego ponemos esa arma inicial
-    private void Start() => SetWeapon(startWeapon);
+    private void Start() => SetWeapon(GameManager.Instance.weapon);
 
     private void Update()
     {
@@ -75,11 +75,13 @@ public class PlayerWeapons : MonoBehaviour
         if (ScytheModel != null)
         {
             ScytheModel.SetActive(type == WeaponType.Scythe);
+            GameManager.Instance.weapon = WeaponType.Scythe;
         }
 
         if (gunModel != null)
         {
             gunModel.SetActive(type == WeaponType.gun);
+            GameManager.Instance.weapon = WeaponType.gun;
         }
 
         //Debug.Log($"Se cambió el arma actual a: {type}"); // feedback para asegurarse que se cambio

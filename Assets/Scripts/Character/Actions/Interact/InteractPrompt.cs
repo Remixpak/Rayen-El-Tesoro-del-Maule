@@ -4,82 +4,92 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.DualShock;
 using UnityEngine.Serialization;
 
-// este script muestra el aviso de "Hablar" o "Abrir" encima del NPC o cofre cuando se puede interactuar
-// y cambia la letra del boton segun el dispositivo 
-//ahora mismo el aviso se muestra segun el tag por lo que se mostrara abrir/hablar segun el tipo de objeto
 public class InteractPrompt : MonoBehaviour
 {
     [Header("Referencias")]
-    [SerializeField] private PlayerInteractor interactor; // referencia al script que detecta el NPC/cofre
-    [SerializeField] private MenuManager menu; // opcional: oculta el aviso con un menu abierto
-    [SerializeField] private GameObject visual; // hijo con el icono y el texto (es lo que se muestra y oculta)
-    [SerializeField] private TMP_Text keyLabel; // letra dentro del circulo
-    [SerializeField] private TMP_Text actionLabel; // texto "Hablar" o "Abrir"
+    [SerializeField] private PlayerInteractor interactor;
+    [SerializeField] private MenuManager menu;
+    [SerializeField] private GameObject visual;
+    [SerializeField] private TMP_Text keyLabel;
+    [SerializeField] private TMP_Text actionLabel;
 
     [Header("Textos")]
-    [FormerlySerializedAs("actionText")] // mantiene el valor si se cambió el nombre en el inspector
-    [SerializeField] private string talkText = "Hablar"; // texto que se muestra si es un NPC
-    [SerializeField] private string openText = "Abrir"; // texto que se muestra si es un cofre
-    [SerializeField] private string keyboardKey = "E"; // letra que se muestra si se usa teclado
-    [SerializeField] private string gamepadKey = "B"; // letra que se muestra si se usa mando Xbox o generico
-    [SerializeField] private string playStationKey = "O"; // letra que se muestra si se usa mando PlayStation
+    [FormerlySerializedAs("actionText")]
+    [SerializeField] private string talkText = "Hablar";
+    [SerializeField] private string openText = "Abrir";
+    [SerializeField] private string keyboardKey = "E";
+    [SerializeField] private string gamepadKey = "B";
+    [SerializeField] private string playStationKey = "O";
 
     [Header("Posición")]
-    [SerializeField] private Vector2 screenOffset = new Vector2(80f, 0f); // en pixeles, respecto a lo alto del NPC
+    [SerializeField] private Vector2 screenOffset = new Vector2(80f, 0f);
 
-    private RectTransform rect; // rect transform del propio aviso (para moverlo)
-    private Canvas canvas; // canvas donde esta el aviso (para el scaleFactor)
-    private Camera cam; // camara principal (para pasar de mundo a pantalla)
-    private GameObject trackedNpc; // NPC o cofre al que sigue el aviso ahora mismo
-    private Collider trackedCollider; // collider del objetivo (para calcular su punto mas alto)
-    private InputDevice lastDevice; // ultimo dispositivo usado (teclado, mando Xbox, mando PS...)
+    private RectTransform rect;
+    private Canvas canvas;
+    private Camera cam;
+    private GameObject trackedNpc;
+    private Collider trackedCollider;
+    private InputDevice lastDevice;
+    private bool isInitialized;
 
-    private void Awake()
+    private void Start()
     {
-        // si falta alguna referencia avisamos por consola y desactivamos el script
+        rect = (RectTransform)transform;
+        canvas = GetComponentInParent<Canvas>();
+        if (visual != null) visual.SetActive(false);
+
+        TryInitialize();
+    }
+
+    private void TryInitialize()
+    {
+        if (isInitialized) return;
+
+        if (interactor == null && GameManager.Instance != null && GameManager.Instance.player != null)
+        {
+            interactor = GameManager.Instance.player.GetComponent<PlayerInteractor>();
+        }
+
         if (interactor == null || visual == null || keyLabel == null || actionLabel == null)
         {
-            Debug.LogError("InteractPrompt: faltan referencias en el Inspector.", this);
-            enabled = false;
             return;
         }
 
-        rect = (RectTransform)transform;
-        canvas = GetComponentInParent<Canvas>();
-        visual.SetActive(false); // el aviso empieza oculto
+        isInitialized = true;
     }
 
     private void OnEnable()
     {
-        // nos suscribimos a los eventos que necesitamos
         InputSystem.onActionChange += OnActionChange;
-        Canvas.willRenderCanvases += UpdatePosition; // se ejecuta justo antes de dibujar, ya con la camara colocada
+        Canvas.willRenderCanvases += UpdatePosition;
     }
 
     private void OnDisable()
     {
-        // nos desuscribimos para no dejar referencias colgando
         InputSystem.onActionChange -= OnActionChange;
         Canvas.willRenderCanvases -= UpdatePosition;
     }
 
     private void Update()
     {
-        // el aviso se muestra si se puede interactuar y no hay un menu abierto
+        if (!isInitialized)
+        {
+            TryInitialize();
+            if (!isInitialized) return;
+        }
+
         bool show = interactor.CanInteract && (menu == null || !menu.IsOpen);
 
         if (show)
         {
             GameObject target = interactor.CurrentTarget;
 
-            // si el objetivo ha cambiado, actualizamos referencias
             if (target != trackedNpc)
             {
                 trackedNpc = target;
                 trackedCollider = target.GetComponent<Collider>();
             }
 
-            // "Abrir" para cofres, "Hablar" para NPC
             string action = interactor.CurrentIsChest ? openText : talkText;
 
             if (actionLabel.text != action)
@@ -87,7 +97,6 @@ public class InteractPrompt : MonoBehaviour
                 actionLabel.text = action;
             }
 
-            // actualizamos la letra del boton segun el dispositivo
             string label = GetKeyLabel();
 
             if (keyLabel.text != label)
@@ -96,81 +105,45 @@ public class InteractPrompt : MonoBehaviour
             }
         }
 
-        // mostramos u ocultamos el aviso segun haga falta
         if (visual.activeSelf != show)
         {
             visual.SetActive(show);
         }
     }
 
-    // recuerda con que dispositivo se uso por ultima vez algun control del juego
     private void OnActionChange(object obj, InputActionChange change)
     {
-        // solo nos interesan las acciones que se han ejecutado
-        if (change != InputActionChange.ActionPerformed)
-        {
-            return;
-        }
+        if (change != InputActionChange.ActionPerformed) return;
 
         InputAction action = obj as InputAction;
-
-        // guardamos el dispositivo del control que se ha usado
         if (action != null && action.activeControl != null)
         {
             lastDevice = action.activeControl.device;
         }
     }
 
-    // devuelve la letra que toca mostrar segun el dispositivo usado
     private string GetKeyLabel()
     {
-        // si el ultimo dispositivo es un mando de PlayStation, mostramos su boton
-        if (lastDevice is DualShockGamepad)
-        {
-            return playStationKey;
-        }
-
-        // si es otro tipo de mando (Xbox o generico), mostramos el suyo
-        if (lastDevice is Gamepad)
-        {
-            return gamepadKey;
-        }
-
-        // si no, mostramos la tecla de teclado
+        if (lastDevice is DualShockGamepad) return playStationKey;
+        if (lastDevice is Gamepad) return gamepadKey;
         return keyboardKey;
     }
 
-    // coloca el aviso encima del NPC/cofre (se llama justo antes de dibujar el canvas)
     private void UpdatePosition()
     {
-        // si no hay que mostrarlo, no hacemos nada
-        if (visual == null || !visual.activeSelf || trackedNpc == null)
-        {
-            return;
-        }
+        if (visual == null || !visual.activeSelf || trackedNpc == null) return;
 
-        // si aun no tenemos la camara, la buscamos
-        if (cam == null)
-        {
-            cam = Camera.main;
-        }
+        if (cam == null) cam = Camera.main;
+        if (cam == null) return;
 
-        if (cam == null)
-        {
-            return;
-        }
-
-        // pasamos la posicion del objetivo a coordenadas de pantalla
         Vector3 screenPoint = cam.WorldToScreenPoint(GetAnchorPoint());
 
-        // si el objetivo esta detras de la camara, lo mandamos muy lejos para que no se vea
         if (screenPoint.z <= 0f)
         {
             rect.position = new Vector3(-10000f, -10000f, 0f);
             return;
         }
 
-        // tenemos en cuenta el scaleFactor del canvas para que el offset sea el mismo en cualquier resolucion
         float scale = canvas != null ? canvas.rootCanvas.scaleFactor : 1f;
 
         rect.position = new Vector3(
@@ -179,7 +152,6 @@ public class InteractPrompt : MonoBehaviour
             0f);
     }
 
-    // calcula el punto de anclaje del aviso: lo mas alto del collider del objetivo
     private Vector3 GetAnchorPoint()
     {
         if (trackedCollider != null)
@@ -188,7 +160,6 @@ public class InteractPrompt : MonoBehaviour
             return new Vector3(bounds.center.x, bounds.max.y, bounds.center.z);
         }
 
-        // si no hay collider, usamos la posicion del objetivo + 1.8m de altura
         return trackedNpc.transform.position + Vector3.up * 1.8f;
     }
 }

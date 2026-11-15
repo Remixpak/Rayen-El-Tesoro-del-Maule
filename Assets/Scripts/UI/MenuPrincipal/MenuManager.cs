@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-// este script es el gestor central de menus: abre y cierra pantallas (pausa, diario, etc.),
-// las apila para poder volver hacia atras, pausa el juego y bloquea/libera el cursor segun haga falta
 public class MenuManager : MonoBehaviour
 {
     [Header("Referencias")]
@@ -15,42 +13,50 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private MenuScreen bookScreen; // pantalla del libro/diario (Tab / Select)
 
     [Header("Menú principal (opcional)")]
-    [SerializeField] private MenuScreen rootScreen; // si se asigna, siempre esta abierta y no se cierra (basicamente abre siempre un menu al iniciar, podria servir con el libro para tutorial o no se)
+    [SerializeField] private MenuScreen rootScreen; // si se asigna, siempre esta abierta y no se cierra
 
-    private readonly List<MenuScreen> stack = new List<MenuScreen>(); // pila de pantallas abiertas (la de arriba es la que se ve)
-    private bool inMenuMode; // para saber si ya estamos en modo menu (y no repetir la llamada a SetMenuMode)
+    private readonly List<MenuScreen> stack = new List<MenuScreen>(); // pila de pantallas abiertas
+    private bool inMenuMode;
+    private bool isInitialized;
 
-    // devuelve true si hay alguna pantalla abierta
-    public bool IsOpen
-    {
-        get { return stack.Count > 0; }
-    }
-
-    // devuelve la pantalla que esta arriba del todo (la visible)
-    private MenuScreen Current
-    {
-        get { return stack.Count > 0 ? stack[stack.Count - 1] : null; }
-    }
+    public bool IsOpen => stack.Count > 0;
+    private MenuScreen Current => stack.Count > 0 ? stack[stack.Count - 1] : null;
 
     private void Start()
     {
-        // si no hay input asignado, avisamos por consola y desactivamos el script
+        TryInitialize();
+    }
+
+    private void TryInitialize()
+    {
+        if (isInitialized) return;
+
+        if (inputs == null && GameManager.Instance != null && GameManager.Instance.player != null)
+        {
+            inputs = GameManager.Instance.player.GetComponent<PlayerInputHandler>();
+        }
+
         if (inputs == null)
         {
-            Debug.LogError("MenuManager: falta asignar el PlayerInputHandler.", this);
-            enabled = false;
             return;
         }
 
-        // si hay una pantalla raiz, la abrimos al empezar
         if (rootScreen != null)
         {
             Open(rootScreen);
         }
+
+        isInitialized = true;
     }
 
     private void Update()
     {
+        if (!isInitialized)
+        {
+            TryInitialize();
+            if (!isInitialized) return;
+        }
+
         // si el jugador pulsa pausa, abrimos o cerramos el menu de pausa
         if (inputs.pause)
         {
@@ -75,39 +81,33 @@ public class MenuManager : MonoBehaviour
             return;
         }
 
-        // si el jugador pulsa la pestaña anterior, avisamos a la pantalla actual
         if (inputs.tabPrev)
         {
             inputs.tabPrev = false;
             Current.OnTabPrev();
         }
 
-        // si el jugador pulsa la pestaña siguiente, avisamos a la pantalla actual
         if (inputs.tabNext)
         {
             inputs.tabNext = false;
             Current.OnTabNext();
         }
 
-        // si el jugador pulsa avanzar (Espacio / Enter / A / clic), avisamos a la pantalla actual (lo usa el dialogo)
         if (inputs.advance)
         {
             inputs.advance = false;
             Current.OnAdvance();
 
-            // la pantalla pudo cerrarse al avanzar (por ejemplo, al terminar un dialogo), asi que ya no hay Current
             if (!IsOpen)
             {
                 return;
             }
         }
 
-        // si el jugador pulsa cancelar/volver
         if (inputs.cancel)
         {
             inputs.cancel = false;
 
-            // si la pantalla no gestiona "volver", retrocedemos en la pila
             if (!Current.OnCancel())
             {
                 Back();
@@ -115,99 +115,45 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    // se llama al pulsar pausa (P / Start)
     private void OnPausePressed()
     {
-        // si hay pantalla raiz, Start no hace nada
-        if (rootScreen != null)
-        {
-            return;
-        }
+        if (rootScreen != null) return;
+        if (Current != null && Current.BlocksShortcuts) return;
 
-        // si la pantalla actual bloquea los atajos (el dialogo, por ejemplo), no hacemos nada
-        if (Current != null && Current.BlocksShortcuts)
-        {
-            return;
-        }
-
-        // si hay algo abierto, cerramos todo; si no, abrimos la pantalla de pausa
-        if (IsOpen)
-        {
-            CloseAll();
-        }
-        else
-        {
-            Open(pauseScreen);
-        }
+        if (IsOpen) CloseAll();
+        else Open(pauseScreen);
     }
 
-    // se llama al pulsar el boton del diario (Tab / Select)
     private void OnJournalPressed()
     {
-        // si hay pantalla raiz, no hacemos nada
-        if (rootScreen != null)
-        {
-            return;
-        }
+        if (rootScreen != null) return;
+        if (Current != null && Current.BlocksShortcuts) return;
 
-        // si la pantalla actual bloquea los atajos (el dialogo, por ejemplo), no hacemos nada
-        if (Current != null && Current.BlocksShortcuts)
-        {
-            return;
-        }
-
-        // si no hay nada abierto, abrimos el libro; si ya esta el libro abierto, cerramos todo
-        if (!IsOpen)
-        {
-            Open(bookScreen);
-        }
-        else if (Current == bookScreen)
-        {
-            CloseAll(); // con la pausa abierta, Tab no hace nada
-        }
+        if (!IsOpen) Open(bookScreen);
+        else if (Current == bookScreen) CloseAll();
     }
 
-    // ---- API publica (la usan los botones de las pantallas) ----
-
-    // abre una pantalla nueva y la pone arriba de la pila
     public void Open(MenuScreen screen)
     {
-        // si la pantalla es null, avisamos y no hacemos nada
-        if (screen == null)
-        {
-            return;
-        }
+        if (screen == null || Current == screen) return;
 
-        // si ya es la pantalla actual, no hacemos nada
-        if (Current == screen)
-        {
-            return;
-        }
-
-        // si habia otra pantalla abierta, la ocultamos
         if (Current != null)
         {
             Hide(Current);
         }
 
-        stack.Add(screen); // metemos la nueva en la pila
-        Show(screen); // la mostramos
-        ApplyState(); // aplicamos pausa/cursor
+        stack.Add(screen);
+        Show(screen);
+        ApplyState();
     }
 
-    // vuelve a la pantalla anterior (o cierra el menu si no hay ninguna)
     public void Back()
     {
-        // si no hay nada abierto o estamos en la raiz, no hacemos nada
-        if (!IsOpen || Current == rootScreen)
-        {
-            return;
-        }
+        if (!IsOpen || Current == rootScreen) return;
 
-        Hide(Current); // ocultamos la de arriba
-        stack.RemoveAt(stack.Count - 1); // la quitamos de la pila
+        Hide(Current);
+        stack.RemoveAt(stack.Count - 1);
 
-        // si queda alguna, mostramos la de abajo
         if (IsOpen)
         {
             Show(Current);
@@ -216,24 +162,17 @@ public class MenuManager : MonoBehaviour
         ApplyState();
     }
 
-    // cierra todo y vuelve al juego (si hay pantalla raiz, vuelve a ella)
     public void CloseAll()
     {
-        // si no hay nada abierto o estamos en la raiz, no hacemos nada
-        if (!IsOpen || Current == rootScreen)
-        {
-            return;
-        }
+        if (!IsOpen || Current == rootScreen) return;
 
-        Hide(Current); // solo la de arriba estaba visible
+        Hide(Current);
 
-        // vamos quitando pantallas de la pila hasta llegar a la raiz (o vaciarla)
         while (IsOpen && Current != rootScreen)
         {
             stack.RemoveAt(stack.Count - 1);
         }
 
-        // si queda alguna (la raiz), la mostramos
         if (IsOpen)
         {
             Show(Current);
@@ -242,9 +181,6 @@ public class MenuManager : MonoBehaviour
         ApplyState();
     }
 
-    // ---- Internos ----
-
-    // muestra una pantalla y selecciona su primer elemento
     private void Show(MenuScreen screen)
     {
         screen.gameObject.SetActive(true);
@@ -252,32 +188,25 @@ public class MenuManager : MonoBehaviour
         SelectFirst(screen);
     }
 
-    // oculta una pantalla
     private void Hide(MenuScreen screen)
     {
         screen.OnHidden();
         screen.gameObject.SetActive(false);
     }
 
-    // selecciona el primer elemento de una pantalla para poder navegar con mando
     private static void SelectFirst(MenuScreen screen)
     {
-        if (EventSystem.current == null)
-        {
-            return;
-        }
+        if (EventSystem.current == null) return;
 
         EventSystem.current.SetSelectedGameObject(null);
         EventSystem.current.SetSelectedGameObject(screen.GetFirstSelected());
     }
 
-    // aplica el estado del menu: pausa, audio, fondo, cursor y modo menu
     private void ApplyState()
     {
         bool open = IsOpen;
         bool pauses = false;
 
-        // si alguna pantalla de la pila pausa el juego, pausamos
         foreach (MenuScreen screen in stack)
         {
             if (screen.PausesGame)
@@ -286,28 +215,25 @@ public class MenuManager : MonoBehaviour
             }
         }
 
-        Time.timeScale = pauses ? 0f : 1f; // pausamos o no el juego
-        AudioListener.pause = pauses; // pausamos o no el audio (los sonidos de UI deben marcar "Ignore Listener Pause" en su AudioSource)
+        Time.timeScale = pauses ? 0f : 1f;
+        AudioListener.pause = pauses;
 
         if (backdrop != null)
         {
-            backdrop.SetActive(open && Current.ShowsBackdrop); // mostramos el fondo oscuro solo si la pantalla actual lo quiere
+            backdrop.SetActive(open && Current.ShowsBackdrop);
         }
 
-        // el cursor se libera solo si la pantalla actual lo necesita (el dialogo, por ejemplo, lo deja oculto y bloqueado)
         bool freeCursor = open && Current.ShowsCursor;
         Cursor.lockState = freeCursor ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = freeCursor;
 
-        // avisamos al input de que estamos en modo menu o no (solo cuando cambia)
-        if (open != inMenuMode)
+        if (open != inMenuMode && inputs != null)
         {
             inMenuMode = open;
             inputs.SetMenuMode(open);
         }
     }
 
-    // por seguridad si se sale de la escena con un menu abierto, no dejamos el juego congelado :p
     private void OnDestroy()
     {
         Time.timeScale = 1f;

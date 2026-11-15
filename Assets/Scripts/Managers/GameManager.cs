@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public enum TimeofDay
 {
     Day,
@@ -23,15 +23,17 @@ public class GameManager : MonoBehaviour
     private bool PihuchenCompleted { get; set; }
     private bool JhonElderCompleted { get; set; }
 
+    public GameObject player;
+
     public TimeofDay currentTimeOfDay { get; set; }
-    //aÒadir m·s seg˙n lo planificado pq ahora no me acuerdo, pero aqui se hace
+    //aÔøΩadir mÔøΩs segÔøΩn lo planificado pq ahora no me acuerdo, pero aqui se hace
 
     //variables de control
     private string currentSceneName { get; set; }
     /*
      cada vez que se cargue una escena se actualiza el nombre de la escena actual, de ese modo podemos saber en que escena estamos y que hacer en consecuencia.
     debe hacerse en el respectivo manager de la escena.
-    podemos usarla para saber en que parte dibujar la ubicaciÛn del jugador en el mapa, o para saber que eventos mostrar en la escena.
+    podemos usarla para saber en que parte dibujar la ubicaciÔøΩn del jugador en el mapa, o para saber que eventos mostrar en la escena.
      */
 
     public static GameData Data => GameSession.Data; // accedemos a los datos de la partida desde el gamemanager
@@ -43,6 +45,8 @@ public class GameManager : MonoBehaviour
     public static int Gold => Data.gold;
     public static int Health => Data.health;
     public static int Ammo => Data.ammo;
+
+    public  WeaponType weapon = Data.WEquiped;
 
 
 
@@ -56,6 +60,42 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
+        }
+
+        player = GameObject.FindWithTag("Player");
+
+        if(player == null)
+        {
+            Debug.LogWarning("No hay player en el manager");
+        }
+        
+    }
+    // A√±ade esto dentro de GameManager.cs
+    public void RegisterPlayer(GameObject newPlayer)
+    {
+        player = newPlayer;
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        currentSceneName = scene.name;
+        
+        // Buscamos al nuevo jugador en la escena actual
+        player = GameObject.FindWithTag("Player");
+
+        if (player == null)
+        {
+            Debug.LogWarning("No se encontr√≥ ning√∫n objeto con la etiqueta 'Player' en la escena: " + scene.name);
         }
     }
 

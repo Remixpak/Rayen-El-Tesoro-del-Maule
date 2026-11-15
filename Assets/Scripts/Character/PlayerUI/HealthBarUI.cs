@@ -9,13 +9,24 @@ public class HealthBarUI : MonoBehaviour
 
     private float targetFill;
     private float currentFill;
+    private bool isInitialized;
 
     private void Start()
     {
+        TryInitialize();
+    }
+
+    private void TryInitialize()
+    {
+        if (isInitialized) return;
+
+        if (stats == null && GameManager.Instance != null && GameManager.Instance.player != null)
+        {
+            stats = GameManager.Instance.player.GetComponent<PlayerStats>();
+        }
+
         if (stats == null || fillImage == null)
         {
-            Debug.LogError("HealthBarUI: faltan referencias (Stats o Fill Image).", this);
-            enabled = false;
             return;
         }
 
@@ -29,6 +40,7 @@ public class HealthBarUI : MonoBehaviour
         targetFill = GetFraction(stats.Health, stats.MaxHealth);
         currentFill = targetFill;
         fillImage.fillAmount = currentFill;
+        isInitialized = true;
     }
 
     private void OnDestroy()
@@ -46,6 +58,12 @@ public class HealthBarUI : MonoBehaviour
 
     private void Update()
     {
+        if (!isInitialized)
+        {
+            TryInitialize();
+            if (!isInitialized) return;
+        }
+
         if (Mathf.Approximately(currentFill, targetFill))
         {
             return;

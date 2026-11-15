@@ -14,19 +14,39 @@ public class AmmoDisplayUI : MonoBehaviour
 
     private readonly List<Image> bullets = new List<Image>();
     private Color fullColor = Color.white;
+    private bool isInitialized;
 
     private void Start()
     {
-        if (stats == null || container == null || bulletPrefab == null)
+        TryInitialize();
+    }
+
+    private void Update()
+    {
+        if (!isInitialized)
         {
-            Debug.LogError("AmmoDisplayUI: faltan referencias (Stats, Container o Bullet Prefab).", this);
-            enabled = false;
-            return;
+            TryInitialize();
+        }
+    }
+
+    private void TryInitialize()
+    {
+        if (isInitialized) return;
+
+        if (stats == null && GameManager.Instance != null && GameManager.Instance.player != null)
+        {
+            stats = GameManager.Instance.player.GetComponent<PlayerStats>();
         }
 
+        if (stats == null || container == null || bulletPrefab == null)
+        {
+            return;
+        }
+        
         fullColor = bulletPrefab.color;
         stats.AmmoChanged += Refresh;
         Refresh(stats.Ammo, stats.MaxAmmo);
+        isInitialized = true;
     }
 
     private void OnDestroy()
