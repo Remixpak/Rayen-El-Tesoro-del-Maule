@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
-  m_IgnoreReversedGraphics: 1
+  m_IgnoreReversedGraphics: 0
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
@@ -118,6 +118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameUI
   areaData: {fileID: 11400000, guid: 1bd26a2abe357f84a9424a11815e39f3, type: 2}
   AreaName: {fileID: 3405132149793783917}
+  Panel: {fileID: 8350949671912121916}
 --- !u!114 &4069795895312062264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,7 +126,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 813183267057351904}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05cadc5eed5bce94885caf33e1f91cc2, type: 3}
   m_Name: 
@@ -282,7 +283,7 @@ GameObject:
   - component: {fileID: 5672925089820661245}
   - component: {fileID: 1180645769170783871}
   m_Layer: 6
-  m_Name: Panel
+  m_Name: AreaPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

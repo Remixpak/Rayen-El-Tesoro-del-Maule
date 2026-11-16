@@ -879,6 +879,7 @@ GameObject:
   - component: {fileID: 5839383591176828159}
   - component: {fileID: 9216332848883135528}
   - component: {fileID: 5307242427532376089}
+  - component: {fileID: 8161929719880370620}
   m_Layer: 0
   m_Name: Novia
   m_TagString: NPC
@@ -894,7 +895,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5126625966841494426}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.74131614, z: -0, w: 0.67115605}
+  m_LocalRotation: {x: 0, y: -0.7413143, z: 0, w: 0.671158}
   m_LocalPosition: {x: 15.418701, y: 0.21800005, z: 1.8345947}
   m_LocalScale: {x: 0.1535276, y: 0.1535276, z: 0.1535276}
   m_ConstrainProportionsScale: 0
@@ -938,6 +939,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcDialog
   conversation: {fileID: 11400000, guid: 13210aa468b0c3a41b631dfd213aead6, type: 2}
+--- !u!114 &8161929719880370620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5126625966841494426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9edf8eedf10fd6646a76acdd8ce5265b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Novia
 --- !u!1 &5244823003265743008
 GameObject:
   m_ObjectHideFlags: 0

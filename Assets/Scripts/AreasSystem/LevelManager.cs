@@ -29,7 +29,10 @@ public class LevelManager : MonoBehaviour
 
     protected virtual void Awake()
     {
-        Instance = this;
+        if(Instance != null)
+            Destroy(this);
+        else
+            Instance = this;
     }
 
     protected virtual void Start()
@@ -65,7 +68,7 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    private void PosicionarJugador()
+    protected void PosicionarJugador()
     {
         Debug.Log("Posicionando al jugador en el spawn correcto...");
         GameObject player = GameObject.FindWithTag("Player");

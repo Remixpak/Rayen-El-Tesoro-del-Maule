@@ -301,15 +301,15 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: c2ba545315e270f40901347e18fc062a, type: 2}
     - target: {fileID: 3601741210865538945, guid: ef7189a3907e5a2468dc7a4b5c1edebf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -31.75
+      value: -91.17077
       objectReference: {fileID: 0}
     - target: {fileID: 3601741210865538945, guid: ef7189a3907e5a2468dc7a4b5c1edebf, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 159.01
+      value: 1.0000005
       objectReference: {fileID: 0}
     - target: {fileID: 3601741210865538945, guid: ef7189a3907e5a2468dc7a4b5c1edebf, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 556.62
+      value: 18.782812
       objectReference: {fileID: 0}
     - target: {fileID: 3601741210865538945, guid: ef7189a3907e5a2468dc7a4b5c1edebf, type: 3}
       propertyPath: m_LocalRotation.w
@@ -343,6 +343,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cuatrero Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 8323325600841025352, guid: ef7189a3907e5a2468dc7a4b5c1edebf, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -353,6 +357,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4748939925696167500, guid: ef7189a3907e5a2468dc7a4b5c1edebf, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8385406629384376364}
+    - targetCorrespondingSourceObject: {fileID: 4748939925696167500, guid: ef7189a3907e5a2468dc7a4b5c1edebf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2956670082485122643}
   m_SourcePrefab: {fileID: 100100000, guid: ef7189a3907e5a2468dc7a4b5c1edebf, type: 3}
 --- !u!4 &4185220412819144965 stripped
 Transform:
@@ -377,9 +384,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cuatrero
   cuatreroData: {fileID: 11400000, guid: c2ba545315e270f40901347e18fc062a, type: 2}
+  sightRange: 15
   player: {fileID: 0}
   muzzle: {fileID: 4119948032508067578}
   shootLine: {fileID: 5715105646521182501}
   shootDuration: 0.05
   animator: {fileID: 0}
   shootTrigger: Shoot
+  patrolPoints: []
+  waypointTolerance: 0.5
+--- !u!143 &2956670082485122643
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5334664346490382536}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}

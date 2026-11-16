@@ -29,7 +29,20 @@ public class PlayerWeapons : MonoBehaviour
     }
 
     //al empezar el juego ponemos esa arma inicial
-    private void Start() => SetWeapon(GameManager.Instance.weapon);
+    //private void Start() => SetWeapon(GameManager.Instance.weapon);
+   private void Start()
+    {
+        // Verificamos de forma segura si el GameManager ya se inicializó
+        if (GameManager.Instance != null)
+        {
+            SetWeapon(GameManager.Instance.weapon);
+        }
+        else
+        {
+            // Si por alguna razón el GameManager aún no existe, usamos el arma por defecto
+            SetWeapon(startWeapon);
+        }
+    }
 
     private void Update()
     {

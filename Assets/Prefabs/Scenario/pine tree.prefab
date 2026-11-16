@@ -104,10 +104,45 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fa6968df8fbafe544b893cf10cf18ea3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5061302701015596902}
     - targetCorrespondingSourceObject: {fileID: -998194352964423144, guid: fa6968df8fbafe544b893cf10cf18ea3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3541581506179633057}
   m_SourcePrefab: {fileID: 100100000, guid: fa6968df8fbafe544b893cf10cf18ea3, type: 3}
+--- !u!1 &4089546561441874838 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: fa6968df8fbafe544b893cf10cf18ea3, type: 3}
+  m_PrefabInstance: {fileID: 3747440466038423239}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &5061302701015596902
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4089546561441874838}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &5054207260207992031 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -998194352964423144, guid: fa6968df8fbafe544b893cf10cf18ea3, type: 3}
@@ -132,5 +167,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.011363866, y: 0.0034962886, z: 0.026501317}
-  m_Center: {x: 0.00055136083, y: 0.00003468225, z: 0.011587285}
+  m_Size: {x: 0.019556936, y: 0.0034962886, z: 0.026501318}
+  m_Center: {x: 0.000677635, y: 0.00003468217, z: 0.011587286}

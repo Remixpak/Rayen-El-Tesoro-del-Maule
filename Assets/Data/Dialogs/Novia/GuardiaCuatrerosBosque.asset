@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7ebfa04b912309468024c8b6fce7787, type: 3}
+  m_Name: GuardiaCuatrerosBosque
+  m_EditorClassIdentifier: Assembly-CSharp::ConversationTemplate
+  conversationLines:
+  - speakerName: Novia de Perpilen
+    DialogText: "\xBFPuedes verme?"
+    speakerSprite: {fileID: 0}
+  - speakerName: "Ray\xE9n"
+    DialogText: Eso creo
+    speakerSprite: {fileID: 0}
+  - speakerName: Novia de Perpilen
+    DialogText: "Entonces debes ser alguien muy especial porque yo mor\xED hace ya
+      un tiempo"
+    speakerSprite: {fileID: 0}
+  - speakerName: Novia de Perpilen
+    DialogText: "\xBFDices que estas en busca del tesoro del Jhon Elder?"
+    speakerSprite: {fileID: 0}
+  - speakerName: Novia de Perpilen
+    DialogText: Creo que puedo ayudarte, pero ese tesoro lo custodia una bestia muy
+      poderosa.
+    speakerSprite: {fileID: 0}
+  - speakerName: Novia de Perpilen
+    DialogText: "Para asegurarme que eres capaz de vencerla deber\xE1s probar tu
+      fuerza derrotando a otras 2 bestias que aterrorizan Maule"
+    speakerSprite: {fileID: 0}
+  - speakerName: Novia de Perpilen
+    DialogText: "La primera se encuentra en el bosque que colinda con el r\xEDo"
+    speakerSprite: {fileID: 0}
+  - speakerName: Novia de Perpilen
+    DialogText: "te abrir\xE9 la puerta si pruebas tu fuerza derrotando a los cuatreros
+      que formaron su guarida ah\xED"
+    speakerSprite: {fileID: 0}
+  - speakerName: Novia de Perpilen
+    DialogText: Pero te aviso, tienes que tener buen ojo para encontrar el acceso
+      a ella
+    speakerSprite: {fileID: 0}
+  - speakerName: Novia de Perpilen
+    DialogText: vuelve cuando los hayas derrotado.
+    speakerSprite: {fileID: 0}

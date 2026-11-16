@@ -5,6 +5,13 @@ public enum TimeofDay
     Day,
     Night
 }
+
+public enum Misiones
+{
+    guadridaCuatreros,
+    BusquedaPihuchen,
+    MisionPihuchen
+}
 public class GameManager : MonoBehaviour
 {
     /*
@@ -48,6 +55,15 @@ public class GameManager : MonoBehaviour
 
     public  WeaponType weapon = Data.WEquiped;
 
+    #region Misiones
+    public Misiones MisionesState;
+    private int criasRestantes = 3;
+
+    public bool cria1Destruida;
+    public bool cria2Destruida;
+    public bool cria3Destruida;
+    #endregion
+
 
 
     private void Awake()
@@ -79,6 +95,7 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+
     }
 
     private void OnDisable()
@@ -96,6 +113,16 @@ public class GameManager : MonoBehaviour
         if (player == null)
         {
             Debug.LogWarning("No se encontró ningún objeto con la etiqueta 'Player' en la escena: " + scene.name);
+        }
+    }
+
+    public void UpdateCriasPihuchen()
+    {
+        Debug.Log("Actualizando crias");
+        criasRestantes--;
+        if(criasRestantes == 0)
+        {
+            MisionesState = Misiones.MisionPihuchen;
         }
     }
 

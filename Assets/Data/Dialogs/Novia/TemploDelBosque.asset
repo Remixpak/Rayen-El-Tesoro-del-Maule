@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7ebfa04b912309468024c8b6fce7787, type: 3}
+  m_Name: TemploDelBosque
+  m_EditorClassIdentifier: Assembly-CSharp::ConversationTemplate
+  conversationLines:
+  - speakerName: Novia de Perpilen
+    DialogText: Estoy impresionada, lo has logrado!
+    speakerSprite: {fileID: 0}
+  - speakerName: Novia de Perpilen
+    DialogText: "Como te lo promet\xED abrir\xE9 las puertas a las ruinas que se
+      encuentran en lo m\xE1s profundo del bosque"
+    speakerSprite: {fileID: 0}
+  - speakerName: Novia de Perpilen
+    DialogText: Ve por esa bestia
+    speakerSprite: {fileID: 0}
