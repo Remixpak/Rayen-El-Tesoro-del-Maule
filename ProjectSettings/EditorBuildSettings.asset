@@ -26,6 +26,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Test R/RaulTest.unity
     guid: e76b058ad93a14a45913530d4a9d0632
+  - enabled: 1
+    path: Assets/Scenes/Test/AreaInitTest/BosqueProfundo.unity
+    guid: bb67242abcb295040bfa3f64f0d0d960
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

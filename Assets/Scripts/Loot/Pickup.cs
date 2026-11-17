@@ -5,7 +5,8 @@ public enum PickupType
 {
     Gold,
     Health,
-    Ammo
+    Ammo,
+    Key
 }
 
 public class Pickup : MonoBehaviour

@@ -111,6 +111,9 @@ public class PlayerStats : MonoBehaviour
             case PickupType.Ammo:
                 AddAmmo(amount);
                 break;
+            case PickupType.Key:
+                key();
+                break;
         }
     }
 
@@ -148,7 +151,10 @@ public class PlayerStats : MonoBehaviour
         data.health = Mathf.Min(maxHealth, data.health + amount);
         HealthChanged?.Invoke(data.health, maxHealth);
     }
-
+    public void key()
+    {
+        this.GetComponent<KeyInventory>().AddKey();
+    }
     // 
 
     // metodo para gastar la municion 

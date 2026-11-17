@@ -7,7 +7,8 @@ public class Town1Manager : LevelManager
     protected override void Start()
     {
         base.Start();
-        if(GameManager.Instance.MisionesState == Misiones.BusquedaPihuchen && !GameManager.Instance.cria2Destruida)
+
+        if (GameManager.Instance.MisionesState == Misiones.BusquedaPihuchen && !GameManager.Instance.cria2Destruida)
         {
             criaPihuchen.SetActive(true);
         }

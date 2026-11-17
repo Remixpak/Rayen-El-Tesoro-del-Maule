@@ -88,6 +88,7 @@ public class LevelManager : MonoBehaviour
                 if (exit.spawnIDToTrigger == targetID && exit.spawnPoint != null)
                 {
                     targetSpawn = exit.spawnPoint;
+                    Debug.Log("Spawn encontrado: " + targetID);
                     break;
                 }
             }
