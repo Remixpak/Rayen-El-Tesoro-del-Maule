@@ -1,43 +1,36 @@
 using UnityEngine;
 
+//logica de puerta que requiere llaves para abrise
 public class LockDoor : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    KeyInventory playerKeyInventory;
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Player")
+        // Usamos CompareTag que es más eficiente que other.tag ==
+        if (other.CompareTag("Player"))
         {
-            playerKeyInventory = other.GetComponent<KeyInventory>();
-            if(playerKeyInventory.HasKey())
-            {
-                playerKeyInventory.RemoveKey();
-                Destroy(gameObject);
-            }
+            TryOpenDoor(other.gameObject);
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.collider.tag == "Player")
+        if (collision.collider.CompareTag("Player"))
         {
-            playerKeyInventory = collision.collider.GetComponent<KeyInventory>();
-            if (playerKeyInventory.HasKey())
-            {
-                playerKeyInventory.RemoveKey();
-                Destroy(gameObject);
-            }
+            TryOpenDoor(collision.collider.gameObject);
+        }
+    }
+
+    private void TryOpenDoor(GameObject playerObject)
+    {
+        KeyInventory playerInventory = playerObject.GetComponentInParent<KeyInventory>();
+
+        // Verificamos que no sea null para evitar el NullReferenceException
+        if (playerInventory != null && playerInventory.HasKey())
+        {
+            playerInventory.RemoveKey();
+            Debug.Log($"Se Gasto una llave. Llaves restantes: {playerInventory.KeysAdquired}");
+
+            Destroy(gameObject); // Abrimos (destruimos) la puerta
         }
     }
 }
