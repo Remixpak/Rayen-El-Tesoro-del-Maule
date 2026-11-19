@@ -2585,11 +2585,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b89130fe1a5222940b977ac6b67d559e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  playerSpeed: 3
+  playerSpeed: 5
   playerJump: 1.2
   turnSmoothTime: 0.1
   playerGravity: -20
-  sprintSpeed: 8
+  sprintSpeed: 10
   cinemachineCameraTarget: {fileID: 4082627388151712471}
   mouseSensitivity: 0.1
   gamepadSensitivity: 150
@@ -2721,7 +2721,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ea719d04d3d2c045b025ec354ba8556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
-  damage: 10
+  damage: 25
   cooldown: 0.1
   hitMask:
     serializedVersion: 2
@@ -2760,7 +2760,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9960cd084741264a9e7c63dc622eab8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerShooting
-  damage: 5
+  damage: 50
   range: 40
   fireCooldown: 0.25
   hitMask:

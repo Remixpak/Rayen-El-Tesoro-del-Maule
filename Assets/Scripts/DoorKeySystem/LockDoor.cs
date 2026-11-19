@@ -38,18 +38,15 @@ public class LockDoor : MonoBehaviour
             playerInventory.RemoveKey();
             isOpen = true;
 
-            // 1. Ejecutamos la animación
+            // Ejecutamos la animación
             if (doorAnimator != null)
             {
                 doorAnimator.SetTrigger(openTriggerName);
             }
 
-            // 2. Buscamos TODOS los colliders de las puertas (hijos) y los desactivamos
             Collider[] collidersDeLaPuerta = GetComponentsInChildren<Collider>();
             foreach (Collider col in collidersDeLaPuerta)
             {
-                // Si el collider es el Trigger de interacción, NO lo desactivamos
-                // Pero si el collider es el de la madera de la puerta, lo apagamos.
                 if (!col.isTrigger)
                 {
                     col.enabled = false;
