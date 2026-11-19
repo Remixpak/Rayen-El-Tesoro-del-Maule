@@ -1,42 +1,67 @@
 using UnityEngine;
 
+//logica de puerta que requiere llaves para abrirse
 public class LockDoor : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    KeyInventory playerKeyInventory;
-    void Start()
-    {
-        
-    }
+    [Header("Animación")]
+    [SerializeField] private Animator doorAnimator;
+    [SerializeField] private string openTriggerName = "Open";
 
-    // Update is called once per frame
-    void Update()
+    [Header("Físicas")]
+    [Tooltip("El collider que bloquea el paso. Si lo dejas vacío, buscará todos los colliders en este objeto y sus hijos.")]
+    [SerializeField] private Collider[] doorColliders; 
+
+    private bool isOpen = false;
+
+    private void Start()
     {
-        
+        // Si no asignaste colliders en el Inspector, los buscamos automáticamente
+        if (doorColliders == null || doorColliders.Length == 0)
+        {
+            doorColliders = GetComponentsInChildren<Collider>();
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Player")
+        if (other.CompareTag("Player"))
         {
-            playerKeyInventory = other.GetComponent<KeyInventory>();
-            if(playerKeyInventory.HasKey())
-            {
-                playerKeyInventory.RemoveKey();
-                Destroy(gameObject);
-            }
+            TryOpenDoor(other.gameObject);
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.collider.tag == "Player")
+        if (collision.collider.CompareTag("Player"))
         {
-            playerKeyInventory = collision.collider.GetComponent<KeyInventory>();
-            if (playerKeyInventory.HasKey())
+            TryOpenDoor(collision.collider.gameObject);
+        }
+    }
+
+    private void TryOpenDoor(GameObject playerObject)
+    {
+        if (isOpen) return;
+
+        KeyInventory playerInventory = playerObject.GetComponentInParent<KeyInventory>();
+
+        if (playerInventory != null && playerInventory.HasKey())
+        {
+            playerInventory.RemoveKey();
+            isOpen = true;
+            Debug.Log($"Se uso una llave. Llaves restantes: {playerInventory.KeysAdquired}");
+
+            
+            if (doorAnimator != null)
             {
-                playerKeyInventory.RemoveKey();
-                Destroy(gameObject);
+                doorAnimator.SetTrigger(openTriggerName);
+            }
+
+            foreach (Collider col in doorColliders)
+            {
+                if (col != null)
+                {
+                    col.enabled = false; 
+                }
             }
         }
     }

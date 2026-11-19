@@ -938,7 +938,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f91d531ab32376d44be83b112a5f61a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcDialog
-  conversation: {fileID: 0}
+  conversation: {fileID: 11400000, guid: 13210aa468b0c3a41b631dfd213aead6, type: 2}
 --- !u!114 &8161929719880370620
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -951,9 +951,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9edf8eedf10fd6646a76acdd8ce5265b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Novia
-  conversationBosqueGuarida: {fileID: 11400000, guid: 81d5a46fc59b1d347a0238842224ad67, type: 2}
-  conversationMisionPihuchen: {fileID: 11400000, guid: e9303db5a871db243a1e407aa7b29b4b, type: 2}
-  conversationBosqueAccesoATemplo: {fileID: 11400000, guid: e51fb9a0ea052d0478142a7e720379b8, type: 2}
 --- !u!1 &5244823003265743008
 GameObject:
   m_ObjectHideFlags: 0

@@ -61,30 +61,29 @@ public class JournalSection : BookSection
 
     // reconstruye la lista de entradas desbloqueadas
     private void Rebuild()
-{
-    foreach (JournalEntrySlot s in slots)
     {
-        s.gameObject.SetActive(false);
-        Destroy(s.gameObject);
-    }
-    slots.Clear();
-
-    foreach (JournalEntry e in entries)
-    {
-        bool desbloqueada = GameManager.Instance != null
-            ? GameManager.Instance.EstaEntradaDesbloqueada(e)
-            : (e != null && e.UnlockedFromStart);
-
-        if (e == null || !desbloqueada)
+        // destruimos las filas anteriores
+        foreach (JournalEntrySlot s in slots)
         {
-            continue;
+            s.gameObject.SetActive(false); // deja de contar en el layout al instante
+            Destroy(s.gameObject);
         }
+        slots.Clear();
 
-        JournalEntrySlot slot = Instantiate(slotPrefab, slotContainer);
-        slot.Setup(e, OnSlotClicked, OnSlotSelected);
-        slots.Add(slot);
+        // creamos una fila por cada entrada desbloqueada
+        foreach (JournalEntry e in entries)
+        {
+            // las entradas bloqueadas o nulas no se muestran
+            if (e == null || !GameSession.IsJournalUnlocked(e))
+            {
+                continue;
+            }
+
+            JournalEntrySlot slot = Instantiate(slotPrefab, slotContainer);
+            slot.Setup(e, OnSlotClicked, OnSlotSelected); // le pasamos la entrada y que hacer al hacer click o al seleccionar
+            slots.Add(slot);
+        }
     }
-}
 
     // se llama al hacer click en una fila: muestra su detalle
     private void OnSlotClicked(JournalEntrySlot slot) => ShowEntry(slot.Entry);
@@ -120,7 +119,4 @@ public class JournalSection : BookSection
         current = null;
         entryContent.SetActive(false); // ocultamos el detalle
     }
-    // Dentro de GameSession.cs
-    
-    
 }
