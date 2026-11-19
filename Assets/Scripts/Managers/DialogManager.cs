@@ -33,6 +33,7 @@ public class DialogManager : MenuScreen
 
     // Para conectar misiones o eventos cuando termina una conversación (también si se cierra con Esc/B)
     public event Action ConversationEnded;
+    public ConversationTemplate CurrentConversation { get; private set; }
 
     // Mientras dura el diálogo no se puede abrir la pausa ni el diario
     public override bool BlocksShortcuts
@@ -86,10 +87,10 @@ public class DialogManager : MenuScreen
             return;
         }
 
+        CurrentConversation = conversation; // <-- Guarda la conversación activa
         isDialogActive = true;
         Manager.Open(this); // MenuManager: congela el juego, cambia al mapa UI y activa este objeto
     }
-
     // Para probar la caja de diálogo sin acercarte a un NPC (menú ⋮ del componente, con Play activo)
     [ContextMenu("Probar diálogo")]
     private void TestDialog()
@@ -128,6 +129,7 @@ public class DialogManager : MenuScreen
         isDialogActive = false;
         lines.Clear();
         ConversationEnded?.Invoke();
+        CurrentConversation = null; // <-- Se limpia después de que los oyentes la lean
     }
 
     // ---- Interno ----

@@ -16,11 +16,9 @@ public class GameData
     public int ammo;
     public int gold;
 
-    public int keys;
-
-    public WeaponType WEquiped;
+    public WeaponType  WEquiped;
 
     //falta como dato poder guardar a futuro el estado de los cofres abierto o del estado del ciclo dia/noche 
 
-
+   
 }
