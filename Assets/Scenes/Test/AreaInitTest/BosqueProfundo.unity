@@ -5170,30 +5170,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: UICanvas
       objectReference: {fileID: 0}
-    - target: {fileID: 4767324007501583311, guid: 57c20e0de8e1ac841a39be6d1d684f66, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5691906682289637443, guid: 57c20e0de8e1ac841a39be6d1d684f66, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5691906682289637443, guid: 57c20e0de8e1ac841a39be6d1d684f66, type: 3}
-      propertyPath: 'entries.Array.data[0]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 2b87467bbd178214a8c2416f328487ca, type: 2}
-    - target: {fileID: 5691906682289637443, guid: 57c20e0de8e1ac841a39be6d1d684f66, type: 3}
-      propertyPath: 'entries.Array.data[1]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 74e55ece01c45db40a9fdabde0f893ad, type: 2}
-    - target: {fileID: 5691906682289637443, guid: 57c20e0de8e1ac841a39be6d1d684f66, type: 3}
-      propertyPath: 'entries.Array.data[2]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 40cfa6c1b5dcd7542b8b6d81dfee0caf, type: 2}
-    - target: {fileID: 7044034880084617108, guid: 57c20e0de8e1ac841a39be6d1d684f66, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7915125359799489984, guid: 57c20e0de8e1ac841a39be6d1d684f66, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -5224,18 +5200,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7915125359799489984, guid: 57c20e0de8e1ac841a39be6d1d684f66, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7915125359799489984, guid: 57c20e0de8e1ac841a39be6d1d684f66, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7915125359799489984, guid: 57c20e0de8e1ac841a39be6d1d684f66, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7915125359799489984, guid: 57c20e0de8e1ac841a39be6d1d684f66, type: 3}
-      propertyPath: m_LocalScale.z
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7915125359799489984, guid: 57c20e0de8e1ac841a39be6d1d684f66, type: 3}
@@ -5321,7 +5285,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8323987093676559634, guid: a21918bb3a85b2b47b3a012ac1fa0b0d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.71700007
+      value: 8.223001
       objectReference: {fileID: 0}
     - target: {fileID: 8323987093676559634, guid: a21918bb3a85b2b47b3a012ac1fa0b0d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5972,7 +5936,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6963439834174187761, guid: a9bd74e1b85f2d4448806aac835e8919, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.7170006
+      value: 8.223
       objectReference: {fileID: 0}
     - target: {fileID: 6963439834174187761, guid: a9bd74e1b85f2d4448806aac835e8919, type: 3}
       propertyPath: m_LocalPosition.z
@@ -6369,6 +6333,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1873611372}
   - component: {fileID: 1873611371}
+  - component: {fileID: 1873611373}
   m_Layer: 0
   m_Name: LvManager
   m_TagString: Untagged
@@ -6418,6 +6383,20 @@ Transform:
   - {fileID: 800126851}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1873611373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1873611370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 809eb5df82c123b4ba2804d8d2e914ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AreaInit
+  currentArea: {fileID: 11400000, guid: 1bd26a2abe357f84a9424a11815e39f3, type: 2}
+  areaKey: Ruinas
 --- !u!4 &1879086720 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5091428570890987236, guid: 1cda8e1c2f24b55438e9b725a1a53756, type: 3}

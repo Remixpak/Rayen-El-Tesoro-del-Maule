@@ -30,9 +30,9 @@ public class MapLocationNode : MonoBehaviour
             locationIcon.color = targetColor;
         }
 
-        if (locationText != null)
+        /*if (locationText != null)
         {
             locationText.color = targetColor;
-        }
+        }*/
     }
 }
