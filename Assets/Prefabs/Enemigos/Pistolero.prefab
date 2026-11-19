@@ -759,6 +759,7 @@ GameObject:
   - component: {fileID: 3703983214517724919}
   - component: {fileID: 842998613834762492}
   - component: {fileID: 5882146922623328427}
+  - component: {fileID: 3530745248710086811}
   m_Layer: 0
   m_Name: Pistolero
   m_TagString: Enemy
@@ -871,7 +872,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2419019378615055726}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bc71b91f0a9f3b141a78fe4e1f531e21, type: 3}
   m_Name: 
@@ -898,6 +899,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02b1e634b15ddc746af600bfb213aa34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CuatreroForestDecrease
+--- !u!114 &3530745248710086811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2419019378615055726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e13e318bea1c5cc42b6b812f08d8141d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAudio
+  hurt: {fileID: 11400000, guid: 0f11e92f3e4e3a740af8efc41280b13f, type: 2}
+  death: {fileID: 0}
+  attackMelee: {fileID: 0}
+  attackRanged: {fileID: 11400000, guid: cbd1819ea37e6d242913cd94fffbda2e, type: 2}
+  alert: {fileID: 0}
 --- !u!1 &2531951068088751231
 GameObject:
   m_ObjectHideFlags: 0

@@ -22,7 +22,7 @@ public class Pickup : MonoBehaviour
     [SerializeField] private float collectDelay = 0.4f;           // espera antes de poder recogerse, para que se vea salir
 
     [Header("Visual")]
-    [SerializeField] private float spinSpeed = 90f;               // grados por segundo (0 = no gira :p)
+    [SerializeField] private float spinSpeed = 90f;               // grados por segundo (0 = no gira :p)z
 
     // Para conectar vida, oro y munición más adelante: Pickup.Collected += MiMetodo;
     public static event Action<PickupType, int> Collected;

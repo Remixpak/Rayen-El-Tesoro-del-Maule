@@ -32,10 +32,13 @@ public class PlayerInteractor : MonoBehaviour
 
     public event Action<GameObject> TalkedToNpc;
 
+    private PlayerAudio sfx;
+
     private void Awake()
     {
         inputs = GetComponent<PlayerInputHandler>();
         targetLock = GetComponent<TargetLock>(); // opcional
+        sfx = GetComponent<PlayerAudio>();
     }
 
     private void Update()
@@ -118,7 +121,13 @@ public class PlayerInteractor : MonoBehaviour
         if (target.CompareTag(chestTag))
         {
             Chest chest = target.GetComponentInParent<Chest>();
-            if (chest != null) chest.Open();
+            if (chest != null)
+            {
+                
+                if (sfx != null) sfx.InteractChest();
+
+                chest.Open();
+            }
             return;
         }
 

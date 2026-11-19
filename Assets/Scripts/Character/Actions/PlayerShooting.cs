@@ -20,6 +20,7 @@ public class PlayerShooting : MonoBehaviour
     [SerializeField] private bool useAnimationEvents = false; // si es true se ejecuta la animacion
     [SerializeField] private Animator animator;
     [SerializeField] private string shootTrigger = "Shoot";
+     private PlayerAudio sfx;
 
 
     private TargetLock targetLock; // si hay un enemigo fijado el disparo va hacia el
@@ -33,6 +34,9 @@ public class PlayerShooting : MonoBehaviour
 
     private void Awake()
     {
+
+        sfx = GetComponent<PlayerAudio>();//buscamos la referencia del jugador automaticamente
+
         stats = GetComponent<PlayerStats>();
         targetLock = GetComponent<TargetLock>(); //referencia al target para apuntar el disparo
         triggerHash = Animator.StringToHash(shootTrigger);//calculamos el hash del disparo una sola vez 
@@ -59,6 +63,7 @@ public class PlayerShooting : MonoBehaviour
         //si no tenemos municion no se dispara 
         if (stats != null && !stats.TryUseAmmo())
         {
+            sfx.EmptyAmmo();
             Debug.Log("[Disparo] Sin munición");
             return;
         }
@@ -84,6 +89,11 @@ public class PlayerShooting : MonoBehaviour
         {
             Debug.LogError("Falta asignar el Muzzle en PlayerShooting.", this);
             return;
+        }
+
+        if(sfx != null)
+        {
+            sfx.Shoot();
         }
 
         Vector3 origin = muzzle.position;//punto desde donde se deispara 

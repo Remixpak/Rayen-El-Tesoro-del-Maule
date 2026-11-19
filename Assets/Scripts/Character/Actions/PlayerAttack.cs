@@ -34,8 +34,11 @@ public class PlayerAttack : MonoBehaviour
 
     public bool isAttacking => state != State.Idle;
 
+    private PlayerAudio sfx;
+
     private void Awake()
     {
+        sfx = GetComponent<PlayerAudio>();
         triggerHash = Animator.StringToHash(attackTrigger);
 
         if(hitbox!=null)
@@ -74,6 +77,11 @@ public class PlayerAttack : MonoBehaviour
         state = State.Windup;
         StateTimer = 0f;
         alreadyHit.Clear();
+
+        if (sfx != null)
+        {
+            sfx.AttackSwing();
+        }
 
         if(animator !=null)
         {

@@ -1950,7 +1950,7 @@ Transform:
   m_GameObject: {fileID: 4566274644577595253}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.9063079, z: 0, w: 0.42261827}
-  m_LocalPosition: {x: 133.65321, y: -0.71700007, z: 78.82886}
+  m_LocalPosition: {x: 4.3431396, y: 8.223, z: 31.238892}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2445,6 +2445,7 @@ GameObject:
   - component: {fileID: 3886673930327023816}
   - component: {fileID: 2230970321832456419}
   - component: {fileID: 6217746695281948232}
+  - component: {fileID: 2966488951934113476}
   m_Layer: 0
   m_Name: RayenPJ
   m_TagString: Player
@@ -2461,7 +2462,7 @@ Transform:
   m_GameObject: {fileID: 5692894010776622655}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.9063079, z: 0, w: 0.42261827}
-  m_LocalPosition: {x: 130.85, y: -3.79, z: 75.83}
+  m_LocalPosition: {x: 1.54, y: 5.15, z: 28.24}
   m_LocalScale: {x: 0.15352765, y: 0.15352765, z: 0.15352765}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2651,7 +2652,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: df70fa95-8a34-4494-b137-73ab6b9c7d37
+  m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &5295992929112275031
@@ -2842,6 +2843,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyInventory
   KeysAdquired: 0
+--- !u!114 &2966488951934113476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5692894010776622655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2665ef6ad82e83744a070a99a892f436, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAudio
+  footstep: {fileID: 0}
+  jump: {fileID: 0}
+  land: {fileID: 0}
+  attackSwing: {fileID: 11400000, guid: e4821ec17b18a194997fd87f5956130a, type: 2}
+  shoot: {fileID: 11400000, guid: cbd1819ea37e6d242913cd94fffbda2e, type: 2}
+  emptyAmmo: {fileID: 11400000, guid: 6a5fcde5df906fb4791796a671fc0581, type: 2}
+  switchWeapon: {fileID: 11400000, guid: 40bcd0f3b8cb64b4f84829cea2b6eaee, type: 2}
+  hurt: {fileID: 11400000, guid: f587a10d15270324c95f9ab506b537d2, type: 2}
+  death: {fileID: 0}
+  heal: {fileID: 0}
+  lockOn: {fileID: 0}
+  lockOff: {fileID: 0}
+  interact: {fileID: 11400000, guid: 9e0ab664f08a54a498a506d09be5584c, type: 2}
+  interactChest: {fileID: 11400000, guid: fe4fac49ef997c8418177281ec6dbea1, type: 2}
+  pickup: {fileID: 11400000, guid: 6ff251739465ccd4ea8c05261e9894da, type: 2}
 --- !u!1 &5750892028081969371
 GameObject:
   m_ObjectHideFlags: 0

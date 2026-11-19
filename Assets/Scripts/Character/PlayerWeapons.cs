@@ -15,6 +15,8 @@ public class PlayerWeapons : MonoBehaviour
     private PlayerAttack scythe; //referencia al scrypt que maneja el ataque melee
     private PlayerShooting gun; // referencia al script que maneja el disparo del arma
 
+    private PlayerAudio sfx;
+
     public WeaponType Current { get; private set; } // arma actual del jugador 
 
     //para que el UI o las animaciones sepan del cambio de arma
@@ -22,6 +24,8 @@ public class PlayerWeapons : MonoBehaviour
 
     private void Awake()
     {
+        sfx = GetComponent<PlayerAudio>();
+
         //tomamos las referencias  a los scripts que estan en el mismo gameobject
         inputs = GetComponent<PlayerInputHandler>();
         scythe = GetComponent<PlayerAttack>();
@@ -75,6 +79,10 @@ public class PlayerWeapons : MonoBehaviour
     //cambia el arma 
     private void SwitchWeapon()
     {
+        if(sfx != null)
+        {
+            sfx.SwitchWeapon();
+        }
         SetWeapon(Current == WeaponType.Scythe ? WeaponType.gun : WeaponType.Scythe);
     }
 

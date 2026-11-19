@@ -4,7 +4,8 @@ using System.Collections;
 public class EnemyHealth : MonoBehaviour, IDamageable
 {
     [Header("Configuración")]
-    [SerializeField] private EnemyData enemyData; 
+    [SerializeField] private EnemyData enemyData;
+    private EnemyAudio sfx; // declaramos sfx para poder llamar al enemyaudio
 
     private float currentHealth;
     private Color baseColor;
@@ -19,6 +20,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     private void Awake()
     {
+        sfx = GetComponent<EnemyAudio>();//buscamos su referencia automaticamente 
+
         dropTable = GetComponent<DropTable>();
 
         if (enemyData == null)
@@ -64,6 +67,11 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         if (currentHealth <= 0)
         {
             Die();
+        }
+
+        else
+        {
+            sfx.PlayHurt();
         }
     }
 

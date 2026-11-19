@@ -36,6 +36,7 @@ public class Cuatrero : MonoBehaviour
     [SerializeField] private Transform[] patrolPoints;
     private int currentPatrolIndex = 0; // Índice actual del punto de patrulla
     [SerializeField] private float waypointTolerance = 0.5f;
+    private EnemyAudio sfx; //declaramos enemyAudio para poder acceder a ella
 
     private CuatreroState currentState;
     private int currentAmmo;
@@ -49,6 +50,7 @@ public class Cuatrero : MonoBehaviour
 
     private void Awake()
     {
+        sfx = GetComponent<EnemyAudio>();//buscamos su referencia automaticamente
         controller = GetComponent<CharacterController>();
 
         if (cuatreroData != null)
@@ -195,6 +197,11 @@ public class Cuatrero : MonoBehaviour
         if (animator != null)
         {
             animator.SetTrigger(triggerHash);
+        }
+
+        if(sfx != null)
+        {
+            sfx.PlayAttackRanged();
         }
 
         Vector3 origin = muzzle.position;

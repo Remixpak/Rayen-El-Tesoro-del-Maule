@@ -19,11 +19,14 @@ public class PlayerStats : MonoBehaviour
     [Header("Premios")]
     [SerializeField] private bool collectPickups = true; // si esta activo, escucha los premios recogidos (Pickup.Collected)
 
+    private PlayerAudio sfx;
+
     // los eventos avisan al HUD y a cualquier sistema que necesite saber que algo cambio
     public event Action<int, int> HealthChanged; // vida actual, vida maxima
     public event Action<int, int> AmmoChanged;   // municion actual, municion maxima
     public event Action<int> GoldChanged;        // oro actual
     public event Action Died;
+
 
     public int Health
     {
@@ -66,6 +69,7 @@ public class PlayerStats : MonoBehaviour
 
     private void Awake()
     {
+        sfx = GetComponent<PlayerAudio>();//buscamos la referencia del jugador automaticamente
         GameData data = GameManager.Data;
 
         if (!data.statsInitialized)
@@ -100,6 +104,11 @@ public class PlayerStats : MonoBehaviour
     // se llama cuando el jugador recoge un premio
     private void OnPickupCollected(PickupType type, int amount)
     {
+        if(sfx != null)
+        {
+            sfx.Pickup();
+        }
+
         switch (type)
         {
             case PickupType.Gold:
@@ -135,6 +144,11 @@ public class PlayerStats : MonoBehaviour
         {
             Debug.Log("[Player] La vida llegó a 0: el jugador ha muerto.", this);
             Died?.Invoke();
+        }
+
+        else
+        {
+            sfx.Hurt();
         }
     }
     //metodo de para curarse 
