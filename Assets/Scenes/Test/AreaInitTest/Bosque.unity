@@ -4534,6 +4534,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI
       objectReference: {fileID: 0}
+    - target: {fileID: 813183267057351904, guid: fb3d4ef33fc7b4941a4b3dfe31f23dbd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4069795895312062264, guid: fb3d4ef33fc7b4941a4b3dfe31f23dbd, type: 3}
       propertyPath: canvasMenu
       value: 
@@ -6671,7 +6675,6 @@ MonoBehaviour:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1992904389}
   - {fileID: 1218781623}
   - {fileID: 655037858}
   - {fileID: 1506642706}
@@ -6679,8 +6682,8 @@ SceneRoots:
   - {fileID: 1555356072}
   - {fileID: 1675551062}
   - {fileID: 1945760606}
-  - {fileID: 768141528}
   - {fileID: 1599428076}
+  - {fileID: 768141528}
   - {fileID: 1298026868}
   - {fileID: 1235288059}
   - {fileID: 312687763}
@@ -6688,3 +6691,4 @@ SceneRoots:
   - {fileID: 2097668127}
   - {fileID: 669195490}
   - {fileID: 5792769827248350930}
+  - {fileID: 1992904389}
