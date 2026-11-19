@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
+using  System.Collections.Generic;
 public enum TimeofDay
 {
     Day,
@@ -8,6 +10,7 @@ public enum TimeofDay
 
 public enum Misiones
 {
+    sinMision,
     guadridaCuatreros,
     BusquedaPihuchen,
     MisionPihuchen
@@ -24,6 +27,8 @@ public class GameManager : MonoBehaviour
      */
     public static GameManager Instance { get; private set; }
     [HideInInspector] public string nextSpawnPointID = "";
+
+    public static event Action<Misiones> OnMisionActualizada;
     //variables de eventos
 
     private bool NgurifiluCompleted { get; set; }
@@ -56,14 +61,33 @@ public class GameManager : MonoBehaviour
     public  WeaponType weapon = Data.WEquiped;
 
     #region Misiones
-    public Misiones MisionesState;
+    public Misiones MisionesState = Misiones.guadridaCuatreros;
     private int criasRestantes = 3;
 
     public bool cria1Destruida;
     public bool cria2Destruida;
     public bool cria3Destruida;
     #endregion
+    #region  Entradas de diario
+    private readonly HashSet<string> entradasDiarioDesbloqueadas = new HashSet<string>();
 
+    public void DesbloquearEntradaDiario(string id)
+    {
+        Debug.Log("Se llamo a desbloquear entrada");
+        if (string.IsNullOrEmpty(id)) return;
+
+        if (entradasDiarioDesbloqueadas.Add(id))
+        {
+            Debug.Log($"[GameManager] Entrada de diario desbloqueada: {id}");
+        }
+    }
+
+    public bool EstaEntradaDesbloqueada(JournalEntry entry)
+    {
+        if (entry == null) return false;
+        return entry.UnlockedFromStart || entradasDiarioDesbloqueadas.Contains(entry.Id);
+    }
+    #endregion
 
 
     private void Awake()
@@ -126,4 +150,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void ActualizarEstadoMision(Misiones nuevoEstado)
+    {
+        MisionesState = nuevoEstado;
+        OnMisionActualizada?.Invoke(MisionesState);
+    }
 }

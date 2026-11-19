@@ -1,12 +1,38 @@
+using System;
 using UnityEngine;
 
 public class NpcDialog : MonoBehaviour
 {
     [SerializeField] public ConversationTemplate conversation;
 
-    //script para poder manejar los estados del juego y las conversaciones (en caso de hacer que se desbloqueen a futuro despues de ciertos sucesos mas dialogos quizas :p)
-    public ConversationTemplate Conversation
+    private DialogManager dialogManager;
+
+    public event Action OnDialogFinished;
+
+    public ConversationTemplate Conversation => conversation;
+
+    private void OnEnable()
     {
-        get { return conversation; }
+        if (dialogManager == null)
+            dialogManager = FindFirstObjectByType<DialogManager>(FindObjectsInactive.Include);
+
+        if (dialogManager != null)
+            dialogManager.ConversationEnded += HandleConversationEnded;
     }
+
+    private void OnDisable()
+    {
+        if (dialogManager != null)
+            dialogManager.ConversationEnded -= HandleConversationEnded;
+    }
+
+    private void HandleConversationEnded()
+{
+    Debug.Log($"[NpcDialog] {name} comparando: Current={(dialogManager.CurrentConversation != null ? dialogManager.CurrentConversation.name : "NULL")} vs Mia={(conversation != null ? conversation.name : "NULL")}");
+
+    if (dialogManager.CurrentConversation == conversation)
+    {
+        OnDialogFinished?.Invoke();
+    }
+}
 }
