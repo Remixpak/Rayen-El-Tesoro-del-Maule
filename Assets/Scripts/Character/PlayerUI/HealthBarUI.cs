@@ -10,6 +10,7 @@ public class HealthBarUI : MonoBehaviour
     private float targetFill;
     private float currentFill;
     private bool isInitialized;
+    private PlayerStats boundStats;
 
     private void Start()
     {
@@ -18,14 +19,46 @@ public class HealthBarUI : MonoBehaviour
 
     private void TryInitialize()
     {
-        if (isInitialized) return;
-
-        if (stats == null && GameManager.Instance != null && GameManager.Instance.player != null)
+        if (fillImage == null)
         {
-            stats = GameManager.Instance.player.GetComponent<PlayerStats>();
+            return;
         }
 
-        if (stats == null || fillImage == null)
+        PlayerStats targetStats = stats;
+
+        if (GameManager.Instance != null && GameManager.Instance.player != null)
+        {
+            PlayerStats gmStats = GameManager.Instance.player.GetComponent<PlayerStats>();
+            if (gmStats != null)
+            {
+                targetStats = gmStats;
+            }
+        }
+
+        if (targetStats != boundStats)
+        {
+            if (boundStats != null)
+            {
+                boundStats.HealthChanged -= OnHealthChanged;
+            }
+
+            stats = targetStats;
+            boundStats = targetStats;
+
+            if (boundStats != null)
+            {
+                boundStats.HealthChanged += OnHealthChanged;
+            }
+
+            isInitialized = false;
+        }
+
+        if (isInitialized)
+        {
+            return;
+        }
+
+        if (stats == null)
         {
             return;
         }
@@ -35,8 +68,6 @@ public class HealthBarUI : MonoBehaviour
             Debug.LogWarning("HealthBarUI: Fill Image debe tener Image Type = Filled (y un Source Image asignado).", this);
         }
 
-        stats.HealthChanged += OnHealthChanged;
-
         targetFill = GetFraction(stats.Health, stats.MaxHealth);
         currentFill = targetFill;
         fillImage.fillAmount = currentFill;
@@ -45,7 +76,12 @@ public class HealthBarUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (stats != null)
+        if (boundStats != null)
+        {
+            boundStats.HealthChanged -= OnHealthChanged;
+        }
+
+        if (stats != null && stats != boundStats)
         {
             stats.HealthChanged -= OnHealthChanged;
         }
@@ -58,10 +94,11 @@ public class HealthBarUI : MonoBehaviour
 
     private void Update()
     {
+        TryInitialize();
+
         if (!isInitialized)
         {
-            TryInitialize();
-            if (!isInitialized) return;
+            return;
         }
 
         if (Mathf.Approximately(currentFill, targetFill))

@@ -48,6 +48,8 @@ public class Cuatrero : MonoBehaviour
     private CharacterController controller; // Referencia al Character Controller
     private TargetLock playerTargetLock;    // Referencia al componente de lock del jugador
 
+    private Transform lastPlayerTransform;
+
     private void Awake()
     {
         sfx = GetComponent<EnemyAudio>();//buscamos su referencia automaticamente
@@ -80,12 +82,18 @@ public class Cuatrero : MonoBehaviour
 
     private void Start()
     {
+
         if(GameManager.Instance.player)
+        {
             player = GameManager.Instance.player.transform;
+        }
+        SyncPlayerReference();
     }
 
     private void Update()
     {
+        SyncPlayerReference();
+
         if (player == null || cuatreroData == null) return;
 
         attackTimer += Time.deltaTime;
@@ -93,6 +101,20 @@ public class Cuatrero : MonoBehaviour
         DetermineState();
         ExecuteState();
     }
+
+    private void SyncPlayerReference()
+{
+    if (GameManager.Instance != null && GameManager.Instance.player != null)
+    {
+        player = GameManager.Instance.player.transform;
+    }
+
+    if (player != null && (player != lastPlayerTransform || playerTargetLock == null))
+    {
+        lastPlayerTransform = player;
+        playerTargetLock = player.GetComponent<TargetLock>();
+    }
+}
 
     private void DetermineState()
     {

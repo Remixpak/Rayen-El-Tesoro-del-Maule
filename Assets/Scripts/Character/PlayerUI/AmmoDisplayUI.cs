@@ -16,6 +16,8 @@ public class AmmoDisplayUI : MonoBehaviour
     private Color fullColor = Color.white;
     private bool isInitialized;
 
+    
+
     private void Start()
     {
         TryInitialize();
@@ -23,28 +25,43 @@ public class AmmoDisplayUI : MonoBehaviour
 
     private void Update()
     {
-        if (!isInitialized)
-        {
-            TryInitialize();
-        }
+        TryInitialize();
     }
-
+    private PlayerStats boundStats;
     private void TryInitialize()
     {
+        PlayerStats targetStats = stats;
+
+        if (GameManager.Instance != null && GameManager.Instance.player != null)
+        {
+            PlayerStats gmStats = GameManager.Instance.player.GetComponent<PlayerStats>();
+            if (gmStats != null)
+            {
+                targetStats = gmStats;
+            }
+        }
+
+        if (targetStats != boundStats)
+        {
+            if (boundStats != null)
+            {
+                boundStats.AmmoChanged -= Refresh;
+            }
+
+            stats = targetStats;
+            boundStats = targetStats;
+
+            if (boundStats != null)
+            {
+                boundStats.AmmoChanged += Refresh;
+                isInitialized = false;
+            }
+        }
+
         if (isInitialized) return;
+        if (stats == null || container == null || bulletPrefab == null) return;
 
-        if (stats == null && GameManager.Instance != null && GameManager.Instance.player != null)
-        {
-            stats = GameManager.Instance.player.GetComponent<PlayerStats>();
-        }
-
-        if (stats == null || container == null || bulletPrefab == null)
-        {
-            return;
-        }
-        
         fullColor = bulletPrefab.color;
-        stats.AmmoChanged += Refresh;
         Refresh(stats.Ammo, stats.MaxAmmo);
         isInitialized = true;
     }

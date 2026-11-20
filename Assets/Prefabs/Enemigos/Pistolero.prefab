@@ -758,7 +758,6 @@ GameObject:
   - component: {fileID: 7306503692593995622}
   - component: {fileID: 3703983214517724919}
   - component: {fileID: 842998613834762492}
-  - component: {fileID: 5882146922623328427}
   - component: {fileID: 3530745248710086811}
   m_Layer: 0
   m_Name: Pistolero
@@ -887,18 +886,6 @@ MonoBehaviour:
   shootTrigger: Shoot
   patrolPoints: []
   waypointTolerance: 0.5
---- !u!114 &5882146922623328427
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2419019378615055726}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02b1e634b15ddc746af600bfb213aa34, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CuatreroForestDecrease
 --- !u!114 &3530745248710086811
 MonoBehaviour:
   m_ObjectHideFlags: 0

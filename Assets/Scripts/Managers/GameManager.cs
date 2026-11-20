@@ -130,8 +130,6 @@ public class GameManager : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         currentSceneName = scene.name;
-        
-        // Buscamos al nuevo jugador en la escena actual
         player = GameObject.FindWithTag("Player");
 
         if (player == null)

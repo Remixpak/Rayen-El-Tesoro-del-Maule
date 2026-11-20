@@ -27,20 +27,40 @@ public class MenuManager : MonoBehaviour
         TryInitialize();
     }
 
-    private void TryInitialize()
+    private bool TryInitialize()
+{
+    PlayerInputHandler targetInputs = null;
+
+    GameObject gmPlayer = GameManager.Instance != null ? GameManager.Instance.player : null;
+    if (gmPlayer != null)
     {
-        if (isInitialized) return;
-
-        if (inputs == null && GameManager.Instance != null && GameManager.Instance.player != null)
+        targetInputs = gmPlayer.GetComponent<PlayerInputHandler>();
+        if (targetInputs == null)
         {
-            inputs = GameManager.Instance.player.GetComponent<PlayerInputHandler>();
+            targetInputs = gmPlayer.GetComponentInChildren<PlayerInputHandler>();
         }
+    }
 
-        if (inputs == null)
-        {
-            return;
-        }
+    if (targetInputs == null)
+    {
+        targetInputs = FindFirstObjectByType<PlayerInputHandler>();
+    }
 
+    if (targetInputs != null && targetInputs != inputs)
+    {
+        inputs = targetInputs;
+        inMenuMode = false;
+        Debug.Log($"[MenuManager] Inputs asignados desde: {inputs.gameObject.name}", this);
+    }
+
+    if (inputs == null)
+    {
+        Debug.LogWarning($"[MenuManager] inputs sigue null. GameManager={(GameManager.Instance != null)}, player={(gmPlayer != null ? gmPlayer.name : "null")}", this);
+        return false;
+    }
+
+    if (!isInitialized)
+    {
         if (rootScreen != null)
         {
             Open(rootScreen);
@@ -49,8 +69,15 @@ public class MenuManager : MonoBehaviour
         isInitialized = true;
     }
 
+    return true;
+}
+
     private void Update()
     {
+        if (!TryInitialize())
+        {
+            return;
+        }
         if (!isInitialized)
         {
             TryInitialize();
