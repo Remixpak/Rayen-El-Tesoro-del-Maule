@@ -50,6 +50,9 @@ public class Novia : MonoBehaviour
             case Misiones.MisionPihuchen:
                 currentConversation = conversationBosqueAccesoATemplo;
                 break;
+            default:
+                currentConversation = conversationBosqueGuarida;
+                break;
         }
 
         DialogComponent.conversation = currentConversation;

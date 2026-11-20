@@ -39,6 +39,10 @@ public class RiverManager : LevelManager
         Debug.Log($"[RiverManager] ¡Evento recibido! Estado actual de misión: {GameManager.Instance.MisionesState}");
         switch (GameManager.Instance.MisionesState)
         {
+            case Misiones.sinMision:
+                GameManager.Instance.ActualizarEstadoMision(Misiones.guadridaCuatreros);
+                GameManager.Instance.DesbloquearEntradaDiario("1");
+                break;
             case Misiones.guadridaCuatreros:
                 // Al terminar este diálogo, pasa a BusquedaPihuchen y avisa al GameManager/Diario
                 GameManager.Instance.ActualizarEstadoMision(Misiones.BusquedaPihuchen);

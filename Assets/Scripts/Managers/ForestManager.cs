@@ -7,31 +7,45 @@ public class ForestManager : LevelManager
     private int enemyCount;
     [SerializeField] private List<GameObject> cuatreros;
     [SerializeField] private GameObject criaPihuchen;
+
+    [SerializeField] private GameObject reja;
     
 
     protected override void Start()
     {
         PosicionarJugador();
 
-        // Buscamos la cantidad de enemigos una sola vez al arrancar
-        enemyCount = FindObjectsByType<Cuatrero>(FindObjectsSortMode.None).Length;
-        Debug.Log("Enemigos encontrados al iniciar: " + enemyCount);
-
-        // Por si acaso la escena arranca sin enemigos
-        CheckEnemiesCompleted();
-        if(GameManager.Instance.MisionesState != Misiones.guadridaCuatreros)
+        if (GameManager.Instance.MisionesState != Misiones.guadridaCuatreros)
         {
-            foreach(GameObject g in cuatreros)
+            foreach (GameObject g in cuatreros)
             {
-                Destroy(g);
+                if (g != null)
+                {
+                    Destroy(g);
+                }
             }
+            enemyCount = 0;
+            enabled = false;
         }
-        if(GameManager.Instance.MisionesState == Misiones.BusquedaPihuchen && !GameManager.Instance.cria3Destruida)
+        else
+        {
+            enemyCount = FindObjectsByType<Cuatrero>(FindObjectsSortMode.None).Length;
+            Debug.Log("Enemigos encontrados al iniciar: " + enemyCount);
+            CheckEnemiesCompleted();
+        }
+
+        if (GameManager.Instance.MisionesState == Misiones.BusquedaPihuchen && !GameManager.Instance.cria3Destruida)
         {
             criaPihuchen.SetActive(true);
         }
 
+        if (GameManager.Instance.MisionesState == Misiones.MisionPihuchen)
+        {
+            Destroy(reja);
+        }
     }
+
+
 
     // Este método lo llamarán los enemigos cuando mueran
     public void UnregisterEnemy()

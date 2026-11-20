@@ -2,18 +2,19 @@ using UnityEngine;
 
 public class CuatreroForestDecrease : MonoBehaviour
 {
-    ForestManager forest;
-    void Start()
+    private ForestManager forest;
+
+    private void Start()
     {
-         forest = LevelManager.Instance as ForestManager;   
+        forest = LevelManager.Instance as ForestManager;
     }
 
     private void OnDestroy()
     {
-        // Si el juego se está cerrando, ForestManager puede destruirse antes; validamos que exista
-        if (ForestManager.Instance != null)
+        ForestManager manager = forest != null ? forest : ForestManager.Instance as ForestManager;
+        if (manager != null)
         {
-            forest.UnregisterEnemy();
+            manager.UnregisterEnemy();
         }
     }
 }
