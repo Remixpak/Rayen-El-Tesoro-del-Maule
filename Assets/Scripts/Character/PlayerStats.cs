@@ -26,6 +26,7 @@ public class PlayerStats : MonoBehaviour
     public event Action<int, int> AmmoChanged;   // municion actual, municion maxima
     public event Action<int> GoldChanged;        // oro actual
     public event Action Died;
+    private PlayerMovement playerMovement; //referencia al movimiento del jugador para el agregar los I frames del dodge
 
 
     public int Health
@@ -69,6 +70,7 @@ public class PlayerStats : MonoBehaviour
 
     private void Awake()
     {
+        playerMovement = GetComponent<PlayerMovement>(); //buscamos la referencia del movimiento del jugador
         sfx = GetComponent<PlayerAudio>();//buscamos la referencia del jugador automaticamente
         GameData data = GameManager.Data;
 
@@ -135,6 +137,12 @@ public class PlayerStats : MonoBehaviour
         if (amount <= 0 || data.health <= 0)
         {
             return;
+        }
+
+        //si el jugador esta en I frames no recibe daño
+        if (playerMovement != null && playerMovement.IsInvulnerable())
+        {
+            return; 
         }
 
         data.health = Mathf.Max(0, data.health - amount);

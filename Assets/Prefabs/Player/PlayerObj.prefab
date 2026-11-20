@@ -2597,7 +2597,7 @@ MonoBehaviour:
   bottomClamp: -30
   topClamp: 60
   lockCameraSmooth: 8
-  dodgeDistance: 3
+  dodgeDistance: 5
   dodgeDuration: 0.35
   dodgeCooldown: 0.3
   dodgeCurve:

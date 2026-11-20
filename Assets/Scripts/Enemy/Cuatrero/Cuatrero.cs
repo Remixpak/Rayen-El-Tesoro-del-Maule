@@ -199,13 +199,23 @@ public class Cuatrero : MonoBehaviour
             animator.SetTrigger(triggerHash);
         }
 
-        if(sfx != null)
+        if (sfx != null)
         {
             sfx.PlayAttackRanged();
         }
 
         Vector3 origin = muzzle.position;
+
         Vector3 direction = muzzle.forward;
+
+        //en caso de que quieras agregar dispersion al disparo para hacerlo mas realista y que el enemigo falle descomenta esto y funca
+        /* 
+        float spreadAmount = 0.05f; //dispersion del disparo
+        direction.x += Random.Range(-spreadAmount, spreadAmount);
+        direction.y += Random.Range(-spreadAmount, spreadAmount);
+        direction.Normalize();
+        */
+
         float range = cuatreroData.attackRange * 1.5f;
         Vector3 endPoint = origin + direction * range;
 
@@ -213,9 +223,15 @@ public class Cuatrero : MonoBehaviour
         {
             endPoint = hit.point;
 
-            if (hit.collider.CompareTag("Player") || hit.collider.GetComponentInParent<PlayerShooting>() != null)
+            if (hit.collider.CompareTag("Player"))
             {
-                Debug.Log("[Cuatrero] ¡Atacó al jugador con éxito!");
+                PlayerStats playerStats = hit.collider.GetComponentInParent<PlayerStats>();
+
+                if (playerStats != null)
+                {
+                    playerStats.TakeDamage((int)cuatreroData.damage); // llamamos al metodo para hacerle daño al jugador
+                    Debug.Log($"[Cuatrero] ¡Atacó al jugador con éxito! Daño: {cuatreroData.damage}");
+                }
             }
         }
 

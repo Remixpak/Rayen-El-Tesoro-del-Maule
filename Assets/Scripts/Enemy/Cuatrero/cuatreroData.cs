@@ -10,5 +10,6 @@ public class CuatreroData : EnemyData
     public float safeDistance = 15f; // Distancia a la que huye para recargar
     [Header("Ajustes de Disparo")]
     public float attackRange = 12f;
+    public float damage = 10f; //daño que hace el disparo
     public LayerMask hitMask = ~0;
 }

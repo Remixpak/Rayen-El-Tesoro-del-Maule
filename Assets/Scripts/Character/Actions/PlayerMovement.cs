@@ -258,6 +258,7 @@ public class PlayerMovement : MonoBehaviour
 
     //funcion que devuelve si el jugador es invulnerable o no, se usa para el esquive 
     // en un futuro cuando se tenga el sistema de vida del jugador recordar usar esta funcion para que el jugador no reciba daño mientras esquiva
+    //basicamente esta wea es el i frame XD
     public bool IsInvulnerable()
     {
         return isDodging && dodgeTimer < dodgeDuration * dodgeInvulnerableFraction;
