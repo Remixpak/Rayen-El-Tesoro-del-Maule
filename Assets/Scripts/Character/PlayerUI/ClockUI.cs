@@ -1,13 +1,11 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using TMPro; 
 
-
-//basicamente este scritp se encarga de hacer la conexion visual con el script de daynigthcyckle para que podamos ver en el hud el ciclo de dia y noche 
 public class ClockUI : MonoBehaviour
 {
     [Header("Referencias Visuales")]
-    [SerializeField] private Image circleFill; // El círculo que se vacía 
+    [SerializeField] private Image circleFill; // El círculo que se vacía
     [SerializeField] private Image iconImage;  // El sol o la luna
 
     [Header("Sprites del Icono")]
@@ -18,29 +16,72 @@ public class ClockUI : MonoBehaviour
     [SerializeField] private Color dayColor = Color.yellow;
     [SerializeField] private Color nightColor = new Color(0.2f, 0.2f, 0.5f); // Azul oscuro
 
+    [Header("Visibilidad por Escena")]
+    [SerializeField] private string[] hiddenInScenes; // Nombres exactos de escenas sin ícono
+
+    private bool iconHiddenInCurrentScene; // indica si el icono esta oculto en la escena actual 
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        EvaluateIconVisibility(SceneManager.GetActiveScene().name);
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        EvaluateIconVisibility(scene.name);
+    }
+    //metodo para actualizar el reloj segun la esceana filtrada para no mostrar el icono
+    private void EvaluateIconVisibility(string sceneName)
+    {
+        iconHiddenInCurrentScene = false;
+
+        if (hiddenInScenes != null)
+        {
+            for (int i = 0; i < hiddenInScenes.Length; i++)
+            {
+                if (hiddenInScenes[i] == sceneName)
+                {
+                    iconHiddenInCurrentScene = true;
+                    break;
+                }
+            }
+        }
+
+        if (iconImage != null)
+        {
+            iconImage.gameObject.SetActive(!iconHiddenInCurrentScene);
+        }
+    }
+
     private void Update()
     {
-        // Si no hay instancia del controlador, no hacemos nada
         if (DayNightController.Instance == null) return;
 
         DayNightController controller = DayNightController.Instance;
 
-        // Actualizamos el círculo con el fill de 1 a 0 segun el progreso del tiempo 
         if (circleFill != null)
         {
             circleFill.fillAmount = 1f - controller.TimeProgress;
         }
 
-        // Cambiamos el color y el icono según si es de día o de noche
-        if (controller.IsDayTime)
+        if (iconImage != null && !iconHiddenInCurrentScene)
         {
-            if (circleFill != null) circleFill.color = dayColor;
-            if (iconImage != null) iconImage.sprite = dayIcon;
+            if (!iconImage.gameObject.activeSelf)
+            {
+                iconImage.gameObject.SetActive(true);
+            }
+
+            iconImage.sprite = controller.IsDayTime ? dayIcon : nightIcon;
         }
-        else
+
+        if (circleFill != null)
         {
-            if (circleFill != null) circleFill.color = nightColor;
-            if (iconImage != null) iconImage.sprite = nightIcon;
+            circleFill.color = controller.IsDayTime ? dayColor : nightColor;
         }
     }
 }

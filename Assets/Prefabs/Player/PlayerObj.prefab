@@ -1949,8 +1949,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4566274644577595253}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.9063079, z: 0, w: 0.42261827}
-  m_LocalPosition: {x: 4.3431396, y: 8.223, z: 31.238892}
+  m_LocalRotation: {x: 0, y: 0.74678004, z: 0, w: -0.6650712}
+  m_LocalPosition: {x: 40.100655, y: -2.197, z: -2.4578161}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2461,8 +2461,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5692894010776622655}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.9063079, z: 0, w: 0.42261827}
-  m_LocalPosition: {x: 1.54, y: 5.15, z: 28.24}
+  m_LocalRotation: {x: -0, y: 0.74678004, z: -0, w: -0.6650712}
+  m_LocalPosition: {x: 36.11, y: -5.27, z: -3.42}
   m_LocalScale: {x: 0.15352765, y: 0.15352765, z: 0.15352765}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2476,7 +2476,7 @@ Transform:
   - {fileID: 2390159459005975883}
   - {fileID: 8705254622271886068}
   m_Father: {fileID: 8673939874118932799}
-  m_LocalEulerAnglesHint: {x: 0, y: -130, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 263.376, z: 0}
 --- !u!54 &3863712216150551208
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2811,6 +2811,7 @@ MonoBehaviour:
   startAmmo: 6
   startGold: 0
   collectPickups: 1
+  gameOverScreen: {fileID: 0}
 --- !u!114 &2230970321832456419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2855,18 +2856,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2665ef6ad82e83744a070a99a892f436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAudio
-  footstep: {fileID: 0}
-  jump: {fileID: 0}
-  land: {fileID: 0}
+  footstep: {fileID: 11400000, guid: 8914788b3e8c15f4688be4d1fb7f44f2, type: 2}
+  jump: {fileID: 11400000, guid: 83c739c6ec2d6bd4c8b63be9c605651d, type: 2}
+  run: {fileID: 11400000, guid: c659ea7766b91814cb82ace9c6d11e26, type: 2}
   attackSwing: {fileID: 11400000, guid: e4821ec17b18a194997fd87f5956130a, type: 2}
   shoot: {fileID: 11400000, guid: cbd1819ea37e6d242913cd94fffbda2e, type: 2}
   emptyAmmo: {fileID: 11400000, guid: 6a5fcde5df906fb4791796a671fc0581, type: 2}
   switchWeapon: {fileID: 11400000, guid: 40bcd0f3b8cb64b4f84829cea2b6eaee, type: 2}
+  dodge: {fileID: 11400000, guid: f0d02ad792423ce4f8efba25dfc9e6ab, type: 2}
   hurt: {fileID: 11400000, guid: f587a10d15270324c95f9ab506b537d2, type: 2}
   death: {fileID: 0}
   heal: {fileID: 0}
-  lockOn: {fileID: 0}
-  lockOff: {fileID: 0}
+  lockOn: {fileID: 11400000, guid: 56a61eb0610a1124c84271e3f46fe344, type: 2}
+  lockOff: {fileID: 11400000, guid: 1b90348ce57e66742bf5d686e767039d, type: 2}
   interact: {fileID: 11400000, guid: 9e0ab664f08a54a498a506d09be5584c, type: 2}
   interactChest: {fileID: 11400000, guid: fe4fac49ef997c8418177281ec6dbea1, type: 2}
   pickup: {fileID: 11400000, guid: 6ff251739465ccd4ea8c05261e9894da, type: 2}

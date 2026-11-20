@@ -42,6 +42,8 @@ public class PlayerMovement : MonoBehaviour
     private float yaw, pitch; // rotacion de la camara en los ejes Y y X
     private float currentSpeed; // velocidad horizontal actual (interpolada para el sprint)
 
+    private PlayerAudio sfx;
+
     // Variables para el esquive 
     private bool isDodging;
     private float dodgeTimer;
@@ -54,6 +56,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
+        sfx = GetComponent<PlayerAudio>();
         _char = GetComponent<CharacterController>();
         _inputs = GetComponent<PlayerInputHandler>();
         targetLock = GetComponent<TargetLock>();
@@ -132,7 +135,12 @@ public class PlayerMovement : MonoBehaviour
         if (_inputs.jump && _char.isGrounded && !isDodging)
         {
             if (locked) TryStartDodge(move); // con lock-on, el salto se convierte en esquive
-            else verticalVelocity = Mathf.Sqrt(playerJump * -2f * playerGravity); // sin lock-on, salto normal
+            else 
+            {
+                verticalVelocity = Mathf.Sqrt(playerJump * -2f * playerGravity); // sin lock-on, salto normal
+                sfx.Jump();
+            }
+            
         }
 
         _inputs.jump = false;
@@ -229,6 +237,8 @@ public class PlayerMovement : MonoBehaviour
 
         isDodging = true;
         dodgeTimer = 0f;
+
+        sfx.Dodge();
 
         Vector3 local = transform.InverseTransformDirection(dodgeDir);
         Vector2 localDir = new Vector2(local.x, local.z);

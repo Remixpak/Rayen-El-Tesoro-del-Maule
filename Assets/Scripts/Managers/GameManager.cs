@@ -175,9 +175,13 @@ public class GameManager : MonoBehaviour
 
         string name = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(name);
+        Time.timeScale = 1f;
+
     }
     public void salir()
     {
         SceneManager.LoadScene("PrincipalPlaceHolder");
+        Time.timeScale = 1f; 
+
     }
 }

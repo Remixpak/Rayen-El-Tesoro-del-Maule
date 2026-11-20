@@ -36,6 +36,8 @@ public class TargetLock : MonoBehaviour
     private bool stickReleased = true; // para saber si el stick volvio al centro y se puede volver a cambiar
     private float lastSwitchTime; // momento del ultimo cambio (para el cooldown)
 
+    private PlayerAudio sfx;
+
     private readonly Collider[] buffer = new Collider[32]; // buffer reutilizable para no generar basura
 
     // devuelve true si hay un enemigo fijado
@@ -56,6 +58,7 @@ public class TargetLock : MonoBehaviour
 
     private void Awake()
     {
+        sfx = GetComponent<PlayerAudio>();
         inputs = GetComponent<PlayerInputHandler>();
 
         // si no hay camara principal, avisamos y desactivamos el script
@@ -180,6 +183,11 @@ public class TargetLock : MonoBehaviour
         }
 
         currentTarget = best; // si no hay ninguno queda en null y no se fija nada
+
+        if(currentTarget !=null && sfx != null)
+        {
+            sfx.LockOn();
+        }
     }
 
     // funcion que comprueba si hay linea de vision entre el jugador y el objetivo
@@ -211,8 +219,14 @@ public class TargetLock : MonoBehaviour
     // suelta el enemigo fijado y limpia los acumuladores
     public void Release()
     {
+        bool hadTarget = currentTarget != null;
         currentTarget = null;
         mouseAccum = Vector2.zero;
+
+        if(hadTarget && sfx != null)
+        {
+            sfx.LockOff();
+        }
     }
 
     // dibuja el rango y la distancia de ruptura en el editor (solo para depurar)

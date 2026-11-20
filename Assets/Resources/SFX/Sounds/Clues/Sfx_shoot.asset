@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SfxCue
   clips:
   - {fileID: 8300000, guid: 028909577280b154884581e2d534d0c3, type: 3}
-  volume: 1
+  volume: 0.5
   pitchRange: {x: 0.95, y: 1.05}
   cooldown: 0.05

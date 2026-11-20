@@ -1377,6 +1377,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 57c20e0de8e1ac841a39be6d1d684f66, type: 3}
+--- !u!114 &239824096 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6322027023116902059, guid: 57c20e0de8e1ac841a39be6d1d684f66, type: 3}
+  m_PrefabInstance: {fileID: 239824095}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f211df0a85d5ef341a16489e0efaa333, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathScreen
 --- !u!1001 &260066498
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5305,6 +5316,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 3886673930327023816, guid: a21918bb3a85b2b47b3a012ac1fa0b0d, type: 3}
+      propertyPath: gameOverScreen
+      value: 
+      objectReference: {fileID: 239824096}
     - target: {fileID: 8294338385885187012, guid: a21918bb3a85b2b47b3a012ac1fa0b0d, type: 3}
       propertyPath: m_Name
       value: PlayerObj

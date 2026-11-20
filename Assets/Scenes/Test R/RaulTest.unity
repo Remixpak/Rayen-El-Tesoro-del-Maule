@@ -5770,6 +5770,7 @@ MonoBehaviour:
   nightIcon: {fileID: 21300000, guid: d2673629e828606489305c3aa2e8ed6f, type: 3}
   dayColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   nightColor: {r: 0.2, g: 0.2, b: 0.5, a: 1}
+  hiddenInScenes: []
 --- !u!1 &1898733732
 GameObject:
   m_ObjectHideFlags: 0
@@ -6958,23 +6959,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6963439834174187761, guid: a9bd74e1b85f2d4448806aac835e8919, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.3597412
+      value: 6.043091
       objectReference: {fileID: 0}
     - target: {fileID: 6963439834174187761, guid: a9bd74e1b85f2d4448806aac835e8919, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.8229995
+      value: 3.803
       objectReference: {fileID: 0}
     - target: {fileID: 6963439834174187761, guid: a9bd74e1b85f2d4448806aac835e8919, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 11.600311
+      value: -2.3384094
       objectReference: {fileID: 0}
     - target: {fileID: 6963439834174187761, guid: a9bd74e1b85f2d4448806aac835e8919, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.42261827
+      value: -0.6650712
       objectReference: {fileID: 0}
     - target: {fileID: 6963439834174187761, guid: a9bd74e1b85f2d4448806aac835e8919, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.9063079
+      value: 0.74678004
       objectReference: {fileID: 0}
     - target: {fileID: 8136591456754769688, guid: a9bd74e1b85f2d4448806aac835e8919, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7039,15 +7040,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8673939874118932799, guid: a21918bb3a85b2b47b3a012ac1fa0b0d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 527.4741
+      value: 496.4
       objectReference: {fileID: 0}
     - target: {fileID: 8673939874118932799, guid: a21918bb3a85b2b47b3a012ac1fa0b0d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 7.4
       objectReference: {fileID: 0}
     - target: {fileID: 8673939874118932799, guid: a21918bb3a85b2b47b3a012ac1fa0b0d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 483.14203
+      value: 502.9
       objectReference: {fileID: 0}
     - target: {fileID: 8673939874118932799, guid: a21918bb3a85b2b47b3a012ac1fa0b0d, type: 3}
       propertyPath: m_LocalRotation.w
@@ -7675,6 +7676,7 @@ MonoBehaviour:
   startAmmo: 6
   startGold: 0
   collectPickups: 1
+  gameOverScreen: {fileID: 0}
 --- !u!4 &7214185807979020582 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5839383591176828159, guid: cfb3400364d590940aa4b10f57e9394c, type: 3}

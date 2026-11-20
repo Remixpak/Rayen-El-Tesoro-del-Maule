@@ -18,6 +18,8 @@ public class PlayerStats : MonoBehaviour
 
     [Header("Premios")]
     [SerializeField] private bool collectPickups = true; // si esta activo, escucha los premios recogidos (Pickup.Collected)
+    [Header("Pantalal de muerte")]
+    [SerializeField] private MenuScreen gameOverScreen; // pantalla que se abre al morir (DeathScreen)
 
     private PlayerAudio sfx;
 
@@ -152,13 +154,35 @@ public class PlayerStats : MonoBehaviour
         {
             Debug.Log("[Player] La vida llegó a 0: el jugador ha muerto.", this);
             Died?.Invoke();
+            ShowDeathScreen();
         }
-
-        else
+        else if (sfx != null)
         {
             sfx.Hurt();
         }
     }
+
+    // abre la pantalla de muerte a traves del MenuManager (congela el juego y bloquea el input de gameplay)
+    private void ShowDeathScreen()
+    {
+        if (gameOverScreen == null)
+        {
+            Debug.LogWarning("PlayerStats: falta asignar la gameover Screen en el Inspector.", this);
+            return;
+        }
+
+        MenuManager manager = gameOverScreen.GetComponentInParent<MenuManager>(true);
+
+        if (manager == null)
+        {
+            Debug.LogError("PlayerStats: la Death Screen no cuelga del canvas que lleva el MenuManager.", this);
+            return;
+        }
+
+        manager.Open(gameOverScreen);
+    }
+
+
     //metodo de para curarse 
     public void Heal(int amount)
     {
