@@ -158,10 +158,24 @@ public class GameManager : MonoBehaviour
 
     public void Reiniciar()
     {
-       String name =  SceneManager.GetActiveScene().name;
-       SceneManager.LoadScene(name);
-    }
+        int targetHealth = 100;
+        int targetAmmo = 6;
 
+        if (player != null && player.TryGetComponent(out PlayerStats stats))
+        {
+            targetHealth = stats.MaxHealth;
+            targetAmmo = stats.MaxAmmo;
+        }
+
+        if (Data != null)
+        {
+            Data.health = targetHealth;
+            Data.ammo = targetAmmo;
+        }
+
+        string name = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(name);
+    }
     public void salir()
     {
         SceneManager.LoadScene("PrincipalPlaceHolder");
