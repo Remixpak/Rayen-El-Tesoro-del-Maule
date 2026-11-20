@@ -248,7 +248,7 @@ public class Cuatrero : MonoBehaviour
 
         if (Physics.Raycast(origin, direction, out RaycastHit hit, range, cuatreroData.hitMask, QueryTriggerInteraction.Ignore))
         {
-            // Corta el rayo exactamente en el punto del primer impacto (pared, obstáculo, sin tag u otro tag)
+            // Corta el rayo exactamente donde golpea el primer collider válido
             endPoint = hit.point;
 
             bool isPlayerHit = hit.collider.CompareTag("Player") || hit.collider.transform.root.CompareTag("Player");
@@ -261,6 +261,14 @@ public class Cuatrero : MonoBehaviour
                     Debug.Log($"[Cuatrero] ¡Atacó al jugador con éxito! Daño: {cuatreroData.damage}");
                 }
             }
+            else
+            {
+                Debug.Log($"[Cuatrero] Rayo bloqueado por '{hit.collider.name}' (Tag: {hit.collider.tag}, Layer: {LayerMask.LayerToName(hit.collider.gameObject.layer)}) en {hit.point}");
+            }
+        }
+        else
+        {
+            Debug.Log("[Cuatrero] El rayo no impactó contra ningún collider dentro del alcance.");
         }
 
         currentAmmo--;

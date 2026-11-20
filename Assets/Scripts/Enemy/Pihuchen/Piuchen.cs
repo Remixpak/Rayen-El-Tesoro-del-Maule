@@ -274,6 +274,7 @@ private void SyncPlayerTarget(string reason)
         }
         else if(Random.value < 0.5f || airGutsCount >= 3)
         {
+            Debug.Log("Fuegooooooooo");
             currentState = PihuchenState.FireBeamAttack;
             actionRoutine = StartCoroutine(FireBeamRoutine());
             fireCount++;
@@ -350,6 +351,7 @@ private void SyncPlayerTarget(string reason)
         isPerformingAction = true;
         SetBeamActive(true);
 
+        bool hasDealtBeamDamage = false;
         Vector3 fixedAimPoint = player.position + Vector3.up * aimHeightOffset;
 
         if (debugBeam || logTargetDebug)
@@ -366,7 +368,7 @@ private void SyncPlayerTarget(string reason)
         while (elapsed < fireBeamDuration)
         {
             FacePlayerSmoothly();
-            UpdateBeam(fixedAimPoint);
+            UpdateBeam(fixedAimPoint, ref hasDealtBeamDamage);
 
             elapsed += Time.deltaTime;
             yield return null;
@@ -376,30 +378,29 @@ private void SyncPlayerTarget(string reason)
         FinishAction();
     }
 
-    private void UpdateBeam(Vector3 aimPoint)
+    private void UpdateBeam(Vector3 aimPoint, ref bool hasDealtBeamDamage)
     {
         if (fireMuzzle == null || fireBeamLine == null) return;
 
         Vector3 origin = fireMuzzle.position;
         Vector3 toAim = aimPoint - origin;
-        Vector3 direction = toAim.normalized; 
+        Vector3 direction = toAim.normalized;
 
-        // Mantenemos el cálculo del alcance estático hacia ese punto fijo
         float range = Mathf.Clamp(toAim.magnitude + 2f, BeamRange, Mathf.Max(BeamRange, fireBeamMaxRange));
         Vector3 endPoint = origin + direction * range;
 
         if (debugBeam)
         {
-            Debug.DrawLine(origin, aimPoint, Color.green);       // Línea estática hacia donde disparó
+            Debug.DrawLine(origin, aimPoint, Color.green);
         }
 
         if (Physics.Raycast(origin, direction, out RaycastHit hit, range, hitMask, QueryTriggerInteraction.Ignore))
         {
             endPoint = hit.point;
 
-            if (hit.collider.CompareTag("Player"))
+            if (!hasDealtBeamDamage && (hit.collider.CompareTag("Player") || hit.collider.transform.root.CompareTag("Player")))
             {
-                OnBeamHitPlayer(hit);
+                OnBeamHitPlayer(hit, ref hasDealtBeamDamage);
             }
         }
 
@@ -407,19 +408,18 @@ private void SyncPlayerTarget(string reason)
         fireBeamLine.SetPosition(1, endPoint);
     }
 
-    private void OnBeamHitPlayer(RaycastHit hit)
+    private void OnBeamHitPlayer(RaycastHit hit, ref bool hasDealtBeamDamage)
     {
-        Debug.Log("[Pihuchen] ¡El rayo de fuego está dañando al jugador!");
         bool isPlayerHit = hit.collider.CompareTag("Player") || hit.collider.transform.root.CompareTag("Player");
-            if (isPlayerHit)
-            {
-                PlayerStats playerStats = hit.collider.GetComponentInParent<PlayerStats>();
-                if (playerStats != null)
-                {
-                    playerStats.TakeDamage(3);
-                    Debug.Log($"[Cuatrero] ¡Atacó al jugador con éxito! Daño: {10}");
-                }
-            }
+        if (!isPlayerHit || hasDealtBeamDamage) return;
+
+        PlayerStats playerStats = hit.collider.GetComponentInParent<PlayerStats>();
+        if (playerStats != null)
+        {
+            playerStats.TakeDamage(3);
+            hasDealtBeamDamage = true;
+            Debug.Log($"[Pihuchen] ¡El rayo dañó al jugador ({3})! No volverá a dañar hasta el próximo rayo.");
+        }
     }
 
     private void SetBeamActive(bool active)
