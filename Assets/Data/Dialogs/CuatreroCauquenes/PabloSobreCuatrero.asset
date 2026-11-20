@@ -16,7 +16,7 @@ MonoBehaviour:
   - speakerName: Pablo
     DialogText: "Atr\xE1s del bar hay un ex cuatrero, parece que est\xE1 intentando
       robar licor."
-    speakerSprite: {fileID: 0}
+    speakerSprite: {fileID: 21300000, guid: b6a2c76bcd1ca0b459d4e964fcb0422d, type: 3}
   - speakerName: Pablo
     DialogText: Pero Shhh no se lo digas a nadie.
-    speakerSprite: {fileID: 0}
+    speakerSprite: {fileID: 21300000, guid: b6a2c76bcd1ca0b459d4e964fcb0422d, type: 3}

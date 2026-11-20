@@ -15,36 +15,36 @@ MonoBehaviour:
   conversationLines:
   - speakerName: Novia de Perpilen
     DialogText: "\xBFPuedes verme?"
-    speakerSprite: {fileID: 0}
+    speakerSprite: {fileID: 21300000, guid: 9c58ebb51cd31864b8c4837723ca7ffb, type: 3}
   - speakerName: "Ray\xE9n"
     DialogText: Eso creo
-    speakerSprite: {fileID: 0}
+    speakerSprite: {fileID: 21300000, guid: cafd5fbb74c4d5848b6698bc691d912e, type: 3}
   - speakerName: Novia de Perpilen
     DialogText: "Entonces debes ser alguien muy especial porque yo mor\xED hace ya
       un tiempo"
-    speakerSprite: {fileID: 0}
+    speakerSprite: {fileID: 21300000, guid: 9c58ebb51cd31864b8c4837723ca7ffb, type: 3}
   - speakerName: Novia de Perpilen
     DialogText: "\xBFDices que estas en busca del tesoro del Jhon Elder?"
-    speakerSprite: {fileID: 0}
+    speakerSprite: {fileID: 21300000, guid: 9c58ebb51cd31864b8c4837723ca7ffb, type: 3}
   - speakerName: Novia de Perpilen
     DialogText: Creo que puedo ayudarte, pero ese tesoro lo custodia una bestia muy
       poderosa.
-    speakerSprite: {fileID: 0}
+    speakerSprite: {fileID: 21300000, guid: 9c58ebb51cd31864b8c4837723ca7ffb, type: 3}
   - speakerName: Novia de Perpilen
     DialogText: "Para asegurarme que eres capaz de vencerla deber\xE1s probar tu
       fuerza derrotando a otras 2 bestias que aterrorizan Maule"
-    speakerSprite: {fileID: 0}
+    speakerSprite: {fileID: 21300000, guid: 9c58ebb51cd31864b8c4837723ca7ffb, type: 3}
   - speakerName: Novia de Perpilen
     DialogText: "La primera se encuentra en el bosque que colinda con el r\xEDo"
-    speakerSprite: {fileID: 0}
+    speakerSprite: {fileID: 21300000, guid: 9c58ebb51cd31864b8c4837723ca7ffb, type: 3}
   - speakerName: Novia de Perpilen
     DialogText: "te abrir\xE9 la puerta si pruebas tu fuerza derrotando a los cuatreros
       que formaron su guarida ah\xED"
-    speakerSprite: {fileID: 0}
+    speakerSprite: {fileID: 21300000, guid: 9c58ebb51cd31864b8c4837723ca7ffb, type: 3}
   - speakerName: Novia de Perpilen
     DialogText: Pero te aviso, tienes que tener buen ojo para encontrar el acceso
       a ella
-    speakerSprite: {fileID: 0}
+    speakerSprite: {fileID: 21300000, guid: 9c58ebb51cd31864b8c4837723ca7ffb, type: 3}
   - speakerName: Novia de Perpilen
     DialogText: vuelve cuando los hayas derrotado.
-    speakerSprite: {fileID: 0}
+    speakerSprite: {fileID: 21300000, guid: 9c58ebb51cd31864b8c4837723ca7ffb, type: 3}

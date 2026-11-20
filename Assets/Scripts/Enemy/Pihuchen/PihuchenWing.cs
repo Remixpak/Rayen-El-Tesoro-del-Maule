@@ -3,6 +3,12 @@ using UnityEngine;
 public class PihuchenWing : MonoBehaviour, IDamageable
 {
     private int health;
+    private DropTable dropTable;
+
+    private void Start()
+    {
+        dropTable = GetComponent<DropTable>();
+    }
 
     public void InitWing(int maxHealth)
     {
@@ -26,6 +32,7 @@ public class PihuchenWing : MonoBehaviour, IDamageable
         if (health <= 0)
         {
             health = 0;
+            dropTable.Drop(transform.position);
             gameObject.SetActive(false); // Desactiva el ala para que el jefe caiga
         }
     }

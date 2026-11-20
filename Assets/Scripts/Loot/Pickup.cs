@@ -34,6 +34,9 @@ public class Pickup : MonoBehaviour
     private float spawnTime;
     private bool collected;
 
+    private Rigidbody rb;
+    private bool magnetized;
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics()
     {
@@ -51,6 +54,11 @@ public class Pickup : MonoBehaviour
     private void Start()
     {
         spawnTime = Time.time;
+    }
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
     }
 
     private void Update()
@@ -91,8 +99,20 @@ public class Pickup : MonoBehaviour
         }
 
         // Comprobar magnetismo (directo, atraviesa todo)
+        /*if (sqrDistance <= magnetRadius * magnetRadius)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, target, magnetSpeed * Time.deltaTime);
+        }*/
         if (sqrDistance <= magnetRadius * magnetRadius)
         {
+            if (!magnetized && rb != null)
+            {
+                magnetized = true;
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.isKinematic = true;
+            }
+
             transform.position = Vector3.MoveTowards(transform.position, target, magnetSpeed * Time.deltaTime);
         }
     }

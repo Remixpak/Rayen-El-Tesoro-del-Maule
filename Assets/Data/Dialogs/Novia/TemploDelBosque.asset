@@ -15,11 +15,11 @@ MonoBehaviour:
   conversationLines:
   - speakerName: Novia de Perpilen
     DialogText: Estoy impresionada, lo has logrado!
-    speakerSprite: {fileID: 0}
+    speakerSprite: {fileID: 21300000, guid: 9c58ebb51cd31864b8c4837723ca7ffb, type: 3}
   - speakerName: Novia de Perpilen
     DialogText: "Como te lo promet\xED abrir\xE9 las puertas a las ruinas que se
       encuentran en lo m\xE1s profundo del bosque"
-    speakerSprite: {fileID: 0}
+    speakerSprite: {fileID: 21300000, guid: 9c58ebb51cd31864b8c4837723ca7ffb, type: 3}
   - speakerName: Novia de Perpilen
     DialogText: Ve por esa bestia
-    speakerSprite: {fileID: 0}
+    speakerSprite: {fileID: 21300000, guid: 9c58ebb51cd31864b8c4837723ca7ffb, type: 3}

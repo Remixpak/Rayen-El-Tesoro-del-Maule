@@ -105,6 +105,11 @@ public class Pihuchen : MonoBehaviour, IDamageable
         GetNewRandomDirection();
     }
 
+    private void Start()
+    {
+        player = GameManager.Instance.player.transform;
+    }
+
     private void Update()
     {
         if (player == null) return;

@@ -10,7 +10,7 @@ public class DeepForestManager : LevelManager
     private Coroutine moverRejaCoroutine;
 
     [Header("Spawn Pihuchen")]
-    public GameObject prefabAInstanciar;
+    public GameObject pihuchen;
     public Transform puntoDeSpawn;
 
    
@@ -61,11 +61,15 @@ public class DeepForestManager : LevelManager
         /*if (prefabAInstanciar == null) return;
 
         Vector3 posicion = puntoDeSpawn != null ? puntoDeSpawn.position : transform.position;
+        Debug.Log("Punto de spawn X: " + posicion.x + " Y: " + posicion.y + " Z: " + posicion.z);
+
         Quaternion rotacion = puntoDeSpawn != null ? puntoDeSpawn.rotation : Quaternion.identity;
 
-        Instantiate(prefabAInstanciar, posicion, rotacion);*/
+        GameObject pihuchenInstanciado = Instantiate(prefabAInstanciar, posicion, rotacion);
+        Debug.Log("Instanciado en X: " + pihuchenInstanciado.transform.position.x +
+                " Y: " + pihuchenInstanciado.transform.position.y +
+                " Z: " + pihuchenInstanciado.transform.position.z);*/
+        pihuchen.SetActive(true);
         Debug.Log("BESTIAAAAAAAAAAA");
     }
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
 }
