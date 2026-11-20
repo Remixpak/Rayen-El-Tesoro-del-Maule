@@ -13,15 +13,94 @@ public class DeepForestManager : LevelManager
     public GameObject pihuchen;
     public Transform puntoDeSpawn;
 
-   
+    [Header("Pantalla de Victoria")]
+    [SerializeField] private GameObject victoryScreen;
+
+    private Pihuchen pihuchenBoss;
+    private bool isSubscribedToBoss;
 
     protected override void Start()
     {
         base.Start();
-        DayNightController DiaNoche = FindAnyObjectByType<DayNightController>();
-        if(DiaNoche != null)
+        Debug.Log("Start Del Deep");
+
+        if (victoryScreen != null)
         {
-            Destroy(DiaNoche.gameObject);
+            victoryScreen.SetActive(false);
+        }
+
+        TrySubscribeToPihuchen();
+
+        if (DayNightController.Instance != null)
+        {
+            Destroy(DayNightController.Instance.gameObject);
+            Debug.Log("DestruyendoLaNoche (Instance)");
+        }
+        else
+        {
+            DayNightController DiaNoche = FindAnyObjectByType<DayNightController>();
+            if (DiaNoche != null)
+            {
+                Destroy(DiaNoche.gameObject);
+                Debug.Log("DestruyendoLaNoche (Find)");
+            }
+            else
+            {
+                Debug.Log("No hay noche");
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribeFromPihuchen();
+    }
+
+    private void TrySubscribeToPihuchen()
+    {
+        if (isSubscribedToBoss) return;
+
+        Pihuchen targetBoss = pihuchen != null
+            ? pihuchen.GetComponentInChildren<Pihuchen>()
+            : FindAnyObjectByType<Pihuchen>(FindObjectsInactive.Include);
+
+        if (targetBoss != null)
+        {
+            pihuchenBoss = targetBoss;
+            pihuchenBoss.OnDefeated += HandlePihuchenDefeated;
+            isSubscribedToBoss = true;
+            Debug.Log($"[DeepForestManager] Suscrito a OnDefeated en '{pihuchenBoss.name}'.", this);
+        }
+        else
+        {
+            Debug.LogWarning("[DeepForestManager] No se encontró ningún componente Pihuchen para suscribirse.", this);
+        }
+    }
+
+    private void UnsubscribeFromPihuchen()
+    {
+        if (pihuchenBoss != null && isSubscribedToBoss)
+        {
+            pihuchenBoss.OnDefeated -= HandlePihuchenDefeated;
+        }
+
+        isSubscribedToBoss = false;
+        pihuchenBoss = null;
+    }
+
+    private void HandlePihuchenDefeated()
+    {
+        Debug.Log("Se LLamó al Handle");
+        UnsubscribeFromPihuchen();
+
+        if (victoryScreen != null)
+        {
+            victoryScreen.SetActive(true);
+            Debug.Log("[DeepForestManager] VictoryScreen activada.", this);
+        }
+        else
+        {
+            Debug.LogWarning("[DeepForestManager] No se asignó 'victoryScreen' en el Inspector.", this);
         }
     }
 
@@ -69,7 +148,11 @@ public class DeepForestManager : LevelManager
         Debug.Log("Instanciado en X: " + pihuchenInstanciado.transform.position.x +
                 " Y: " + pihuchenInstanciado.transform.position.y +
                 " Z: " + pihuchenInstanciado.transform.position.z);*/
-        pihuchen.SetActive(true);
+        if (pihuchen != null)
+        {
+            pihuchen.SetActive(true);
+            TrySubscribeToPihuchen();
+        }
         Debug.Log("BESTIAAAAAAAAAAA");
     }
 }

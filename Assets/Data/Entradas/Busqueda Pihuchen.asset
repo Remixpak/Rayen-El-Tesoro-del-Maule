@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JournalEntry
   id: 2
   title: Busqueda Pihuchen
-  body: "Parece que ya hay rastros de la primera bestia que debo cazar, pa eso debo
-    buscar a sus 3 crias que pueden estar camufladas como animales normales.\nla
+  body: "Parece que ya hay rastros de la primera bestia que debo cazar. Pa' eso,
+    debo buscar a sus tres cr\xEDas, que pueden estar camufladas como animales normales.\n\nLa
     primera estaba en el pueblo, otra en el bosque y la tercera tendr\xE9 que encontrarla
     por mi cuenta."
-  image: {fileID: 0}
+  image: {fileID: 21300000, guid: 9c58ebb51cd31864b8c4837723ca7ffb, type: 3}
   unlockedFromStart: 0

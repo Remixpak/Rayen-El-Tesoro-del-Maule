@@ -4,19 +4,19 @@ public class DayNightController : MonoBehaviour
 {
     public static DayNightController Instance { get; private set; }
 
-    [Header("Configuración de Tiempos")]
-    [Tooltip("Duración en minutos de la fase diurna")]
+    [Header("Configuraciï¿½n de Tiempos")]
+    [Tooltip("Duraciï¿½n en minutos de la fase diurna")]
     [SerializeField] private float dayDurationMinutes = 10f;
-    [Tooltip("Duración en minutos de la fase nocturna")]
+    [Tooltip("Duraciï¿½n en minutos de la fase nocturna")]
     [SerializeField] private float nightDurationMinutes = 10f;
 
     [Header("Referencias Visuales")]
     [SerializeField] private Light directionalLight;
 
-    [Header("Configuración de Rotación")]
-    [Tooltip("Si está activo, toma exactamente la rotación (X, Y, Z) que tenga la luz en el Inspector al iniciar como su punto de partida.")]
+    [Header("Configuraciï¿½n de Rotaciï¿½n")]
+    [Tooltip("Si estï¿½ activo, toma exactamente la rotaciï¿½n (X, Y, Z) que tenga la luz en el Inspector al iniciar como su punto de partida.")]
     [SerializeField] private bool usarRotacionInicialDelEditor = true;
-    [Tooltip("Si desactivas la opción de arriba, puedes escribir los ángulos base aquí manualmente.")]
+    [Tooltip("Si desactivas la opciï¿½n de arriba, puedes escribir los ï¿½ngulos base aquï¿½ manualmente.")]
     [SerializeField] private Vector3 rotacionPersonalizadaBase;
 
     // Estados internos
@@ -48,7 +48,7 @@ public class DayNightController : MonoBehaviour
 
         if (directionalLight != null)
         {
-            // Guardamos la rotación con la que empieza el objeto en la escena (X, Y y Z)
+            // Guardamos la rotaciï¿½n con la que empieza el objeto en la escena (X, Y y Z)
             if (usarRotacionInicialDelEditor)
             {
                 baseRotation = directionalLight.transform.eulerAngles;
@@ -87,7 +87,7 @@ public class DayNightController : MonoBehaviour
         {
             currentPhaseDuration = dayDurationMinutes * 60f;
             GameManager.Instance.currentTimeOfDay = TimeofDay.Day;
-            Debug.Log("Ha comenzado el DÍA");
+            Debug.Log("Ha comenzado el Dï¿½A");
         }
         else
         {
@@ -101,12 +101,20 @@ public class DayNightController : MonoBehaviour
     {
         if (directionalLight == null) return;
 
-        // Calculamos cuánto debe avanzar el eje X según el progreso (0 a 180 para el día, 180 a 360 para la noche)
+        // Calculamos cuï¿½nto debe avanzar el eje X segï¿½n el progreso (0 a 180 para el dï¿½a, 180 a 360 para la noche)
         float targetAngleX = isDayTime ? Mathf.Lerp(0f, 180f, progress) : Mathf.Lerp(180f, 360f, progress);
 
-        // Sumamos el desplazamiento del tiempo a la rotación base en X, respetando los ejes Y y Z originales
+        // Sumamos el desplazamiento del tiempo a la rotaciï¿½n base en X, respetando los ejes Y y Z originales
         float finalX = baseRotation.x + targetAngleX;
 
         directionalLight.transform.rotation = Quaternion.Euler(new Vector3(finalX, baseRotation.y, baseRotation.z));
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
     }
 }

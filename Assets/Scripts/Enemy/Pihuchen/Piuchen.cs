@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using UnityEngine;
+
 
 public enum PihuchenState
 {
@@ -12,6 +14,8 @@ public enum PihuchenState
 
 public class Pihuchen : MonoBehaviour, IDamageable
 {
+
+    public event Action OnDefeated;
     [Header("Vida del Cuerpo")]
     [SerializeField] private float maxBodyHealth = 800f;
     private float currentBodyHealth;
@@ -265,14 +269,14 @@ private void SyncPlayerTarget(string reason)
         timeAwayFromPlayer = 0f;
         consecutiveAttacks++;
 
-        if (Random.value > 0.5f || fireCount >= 3)
+        if (UnityEngine.Random.value > 0.5f || fireCount >= 3)
         {
             currentState = PihuchenState.WindGustTelegraph;
             actionRoutine = StartCoroutine(WindGustRoutine());
             airGutsCount++;
             fireCount=0;
         }
-        else if(Random.value < 0.5f || airGutsCount >= 3)
+        else if(UnityEngine.Random.value < 0.5f || airGutsCount >= 3)
         {
             Debug.Log("Fuegooooooooo");
             currentState = PihuchenState.FireBeamAttack;
@@ -468,9 +472,9 @@ private void SyncPlayerTarget(string reason)
     private void GetNewRandomDirection()
     {
         // Genera una dirección aleatoria en el plano XZ
-        Vector2 randomCircle = Random.insideUnitCircle.normalized;
+        Vector2 randomCircle = UnityEngine.Random.insideUnitCircle.normalized;
         randomMoveDirection = new Vector3(randomCircle.x, 0f, randomCircle.y);
-        changeDirectionTimer = Random.Range(3f, 6f); // Cambia de rumbo cada 3 a 6 segundos
+        changeDirectionTimer = UnityEngine.Random.Range(3f, 6f); // Cambia de rumbo cada 3 a 6 segundos
     }
 
    private void FallToGroundAndBeVulnerable()
@@ -549,6 +553,7 @@ private void SyncPlayerTarget(string reason)
     private void Die()
     {
         Debug.Log("[Pihuchen] ¡El jefe ha sido derrotado!");
+        OnDefeated?.Invoke();
         Destroy(gameObject);
     }
 }

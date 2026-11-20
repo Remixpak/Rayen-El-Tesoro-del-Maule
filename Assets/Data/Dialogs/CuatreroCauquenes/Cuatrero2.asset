@@ -20,7 +20,7 @@ MonoBehaviour:
     DialogText: "Eres bonita as\xED que te lo dir\xE9"
     speakerSprite: {fileID: 21300000, guid: 920195f89abfff64b862be4e7a97ffdb, type: 3}
   - speakerName: Drago
-    DialogText: "La clave est\xE1 en el arbol sin punta"
+    DialogText: "La clave est\xE1 en el \xE1rbol sin punta"
     speakerSprite: {fileID: 21300000, guid: 920195f89abfff64b862be4e7a97ffdb, type: 3}
   - speakerName: Drago
     DialogText: "\xBFNo crees que merezco una recompensa? jeje"

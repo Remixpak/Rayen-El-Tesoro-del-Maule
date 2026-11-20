@@ -1301,7 +1301,7 @@ MonoBehaviour:
   playButton: {fileID: 143312576}
   continueButton: {fileID: 974504874}
   quitButton: {fileID: 2086040156}
-  gameScene: RaulTest
+  gameScene: Pueblo
   confirmPanel: {fileID: 1558875126}
   confirmYes: {fileID: 41877362}
   confirmNo: {fileID: 282042218}

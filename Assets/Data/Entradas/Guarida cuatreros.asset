@@ -16,5 +16,5 @@ MonoBehaviour:
   title: Encontrar la guardida de los cuatreros
   body: "La extra\xF1a mujer del r\xEDo me dijo que fuera al bosque y derrotara a
     los cuatreros que tienen su guarida ah\xED."
-  image: {fileID: 0}
+  image: {fileID: 21300000, guid: 9c58ebb51cd31864b8c4837723ca7ffb, type: 3}
   unlockedFromStart: 0

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JournalEntry
   id: 3
   title: Cazar al Pihuchen
-  body: "Se han aierto las puertas a lo m\xE1s profundo del bosque, debo ir a encontrar
+  body: "Se han abierto las puertas a lo m\xE1s profundo del bosque. Debo ir a encontrar
     esa bestia."
-  image: {fileID: 0}
+  image: {fileID: 21300000, guid: 9c58ebb51cd31864b8c4837723ca7ffb, type: 3}
   unlockedFromStart: 0
