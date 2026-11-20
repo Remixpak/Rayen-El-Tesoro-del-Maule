@@ -127,11 +127,13 @@ public class Cuatrero : MonoBehaviour
         if (currentAmmo <= 0 || isReloading)
         {
             currentState = CuatreroState.Reload;
+            Debug.Log("Cuatrero Recargando");
         }
         // 2. Si el jugador NO está a la vista Y tenemos puntos de patrulla -> Patrullar
         else if (!playerInSight && patrolPoints != null && patrolPoints.Length > 0)
         {
             currentState = CuatreroState.Patrol;
+            Debug.Log("Cuatrero patrol");
         }
         else
         {
@@ -144,16 +146,19 @@ public class Cuatrero : MonoBehaviour
             if (playerIsLockedOnSomeoneElse)
             {
                 currentState = CuatreroState.Surround;
+                Debug.Log("Cuatrero Surround");
             }
             // 5. Si el jugador está muy lejos -> Acercarse
             else if (distanceToPlayer > cuatreroData.attackRange)
             {
                 currentState = CuatreroState.Approach;
+                Debug.Log("Cuatrero aproach");
             }
             // 6. De lo contrario, atacar
             else
             {
                 currentState = CuatreroState.Attack;
+                Debug.Log("Cuatrero atack");
             }
         }
     }
@@ -243,15 +248,16 @@ public class Cuatrero : MonoBehaviour
 
         if (Physics.Raycast(origin, direction, out RaycastHit hit, range, cuatreroData.hitMask, QueryTriggerInteraction.Ignore))
         {
+            // Corta el rayo exactamente en el punto del primer impacto (pared, obstáculo, sin tag u otro tag)
             endPoint = hit.point;
 
-            if (hit.collider.CompareTag("Player"))
+            bool isPlayerHit = hit.collider.CompareTag("Player") || hit.collider.transform.root.CompareTag("Player");
+            if (isPlayerHit)
             {
                 PlayerStats playerStats = hit.collider.GetComponentInParent<PlayerStats>();
-
                 if (playerStats != null)
                 {
-                    playerStats.TakeDamage((int)cuatreroData.damage); // llamamos al metodo para hacerle daño al jugador
+                    playerStats.TakeDamage((int)cuatreroData.damage);
                     Debug.Log($"[Cuatrero] ¡Atacó al jugador con éxito! Daño: {cuatreroData.damage}");
                 }
             }

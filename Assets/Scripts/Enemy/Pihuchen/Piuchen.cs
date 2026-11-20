@@ -17,6 +17,7 @@ public class Pihuchen : MonoBehaviour, IDamageable
     private float currentBodyHealth;
 
     [Header("Configuración de Movimiento y Combate")]
+
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float attackRange = 15f;
     [SerializeField] private float attackCooldown = 3f;
@@ -108,12 +109,14 @@ public class Pihuchen : MonoBehaviour, IDamageable
     private void Start()
     {
         player = GameManager.Instance.player.transform;
+        SyncPlayerTarget("Start");
     }
 
     private void Update()
     {
+    
         if (player == null) return;
-
+        SyncPlayerTarget("Update");
         attackTimer += Time.deltaTime;
 
         CheckWingsStatus();
@@ -122,6 +125,38 @@ public class Pihuchen : MonoBehaviour, IDamageable
     }
 
     #endregion
+
+    #region sync
+    [Header("Debug Objetivo")]
+[SerializeField] private bool logTargetDebug = true;
+private Transform lastLoggedPlayer;
+
+private void SyncPlayerTarget(string reason)
+{
+    GameObject gmPlayer = GameManager.Instance != null ? GameManager.Instance.player : null;
+    Transform targetTransform = gmPlayer != null ? gmPlayer.transform : player;
+
+    if (targetTransform != null && targetTransform != player)
+    {
+        player = targetTransform;
+    }
+
+    if (logTargetDebug && player != lastLoggedPlayer)
+    {
+        lastLoggedPlayer = player;
+        string gmName = gmPlayer != null ? $"{gmPlayer.name} (id:{gmPlayer.GetInstanceID()})" : "null";
+        string pName = player != null ? $"{player.name} (id:{player.GetInstanceID()})" : "null";
+        Vector3 pPos = player != null ? player.position : Vector3.zero;
+        Vector3 pRootPos = player != null ? player.root.position : Vector3.zero;
+
+        Debug.Log(
+            $"[Pihuchen TargetSync | {reason}] Boss='{name}' BossPos={transform.position} | " +
+            $"Player='{pName}' Pos={pPos} RootPos={pRootPos} | GM.player='{gmName}'",
+            this
+        );
+    }
+}
+#endregion
 
     #region Alas
 
@@ -288,6 +323,17 @@ public class Pihuchen : MonoBehaviour, IDamageable
     private void SpawnAirGusts()
     {
         if (airMuzzles == null || airGustPrefab == null) return;
+
+        Vector3 gustTarget = player != null ? player.position : Vector3.zero;
+        if (logTargetDebug)
+        {
+            Debug.Log(
+                $"[Pihuchen AirGust] BossPos={transform.position} | Player='{player?.name}' " +
+                $"PlayerPos={gustTarget} | PlayerRootPos={player?.root.position}",
+                this
+            );
+        }
+
         Debug.Log("disparando rafaga");
         foreach (Transform muzzle in airMuzzles)
         {
@@ -295,7 +341,7 @@ public class Pihuchen : MonoBehaviour, IDamageable
 
             GameObject gust = Instantiate(airGustPrefab, muzzle.position, Quaternion.identity);
             AirGustProjectile projectile = gust.GetComponent<AirGustProjectile>();
-            if (projectile != null) projectile.Initialize(player.position);
+            if (projectile != null) projectile.Initialize(gustTarget);
         }
     }
 
@@ -304,23 +350,22 @@ public class Pihuchen : MonoBehaviour, IDamageable
         isPerformingAction = true;
         SetBeamActive(true);
 
-        // 1. Calculamos el punto de mira hacia el jugador UNA SOLA VEZ al iniciar el disparo
         Vector3 fixedAimPoint = player.position + Vector3.up * aimHeightOffset;
 
-        if (debugBeam)
+        if (debugBeam || logTargetDebug)
         {
             Vector3 dbgOrigin = fireMuzzle != null ? fireMuzzle.position : transform.position;
-            Debug.Log($"[Pihuchen] ¡Disparando rayo estático hacia la posición: {fixedAimPoint}!");
+            Debug.Log(
+                $"[Pihuchen BeamStart] MuzzlePos={dbgOrigin} | FixedAimPoint={fixedAimPoint} | " +
+                $"Player='{player.name}' PlayerPos={player.position} | GM.playerPos={GameManager.Instance?.player?.transform.position}",
+                this
+            );
         }
 
         float elapsed = 0f;
         while (elapsed < fireBeamDuration)
         {
-            // Opcional: Si quieres que el enemigo siga rotando hacia el jugador mientras dispara, 
-            // puedes dejar FacePlayerSmoothly(). Si quieres que también se quede quieto apuntando, bórralo de aquí.
-            FacePlayerSmoothly(); 
-
-            // 2. Actualizamos el rayo usando siempre el mismo punto fijo que guardamos al principio
+            FacePlayerSmoothly();
             UpdateBeam(fixedAimPoint);
 
             elapsed += Time.deltaTime;
@@ -365,6 +410,16 @@ public class Pihuchen : MonoBehaviour, IDamageable
     private void OnBeamHitPlayer(RaycastHit hit)
     {
         Debug.Log("[Pihuchen] ¡El rayo de fuego está dañando al jugador!");
+        bool isPlayerHit = hit.collider.CompareTag("Player") || hit.collider.transform.root.CompareTag("Player");
+            if (isPlayerHit)
+            {
+                PlayerStats playerStats = hit.collider.GetComponentInParent<PlayerStats>();
+                if (playerStats != null)
+                {
+                    playerStats.TakeDamage(3);
+                    Debug.Log($"[Cuatrero] ¡Atacó al jugador con éxito! Daño: {10}");
+                }
+            }
     }
 
     private void SetBeamActive(bool active)

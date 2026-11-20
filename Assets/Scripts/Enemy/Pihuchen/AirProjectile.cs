@@ -41,6 +41,11 @@ public class AirGustProjectile : MonoBehaviour
         {
             Debug.Log("[AirGust] ¡La ráfaga golpeó al jugador!");
             // Aquí puedes restar vida al jugador si tienes un script de salud
+            PlayerStats s = other.GetComponent<PlayerStats>();
+            if(s != null)
+            {
+                s.TakeDamage(1);
+            }
             Destroy(gameObject);
         }
         else if (!other.CompareTag("Enemy"))
