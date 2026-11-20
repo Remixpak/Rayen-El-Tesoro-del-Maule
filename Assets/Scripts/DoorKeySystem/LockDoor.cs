@@ -44,14 +44,17 @@ public class LockDoor : MonoBehaviour
                 doorAnimator.SetTrigger(openTriggerName);
             }
 
-            Collider[] collidersDeLaPuerta = GetComponentsInChildren<Collider>();
+            /*Collider[] collidersDeLaPuerta = GetComponentsInChildren<Collider>();
             foreach (Collider col in collidersDeLaPuerta)
             {
                 if (!col.isTrigger)
                 {
                     col.enabled = false;
                 }
-            }
+            }*/
+            Collider collider = GetComponent<Collider>();
+            if(collider != null)
+                collider.enabled = false;
         }
     }
 }
