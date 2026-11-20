@@ -155,4 +155,15 @@ public class GameManager : MonoBehaviour
         MisionesState = nuevoEstado;
         OnMisionActualizada?.Invoke(MisionesState);
     }
+
+    public void Reiniciar()
+    {
+       String name =  SceneManager.GetActiveScene().name;
+       SceneManager.LoadScene(name);
+    }
+
+    public void salir()
+    {
+        SceneManager.LoadScene("PrincipalPlaceHolder");
+    }
 }
