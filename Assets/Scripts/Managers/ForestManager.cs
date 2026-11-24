@@ -9,7 +9,8 @@ public class ForestManager : LevelManager
     [SerializeField] private GameObject criaPihuchen;
 
     [SerializeField] private GameObject reja;
-    
+    public bool cuatrerosDestruidos = false;
+
 
     protected override void Start()
     {
@@ -58,9 +59,10 @@ public class ForestManager : LevelManager
 
     private void CheckEnemiesCompleted()
     {
-        if (enemyCount <= 0)
+        if (enemyCount <= 0 && GameManager.Instance.MisionesState == Misiones.guadridaCuatreros)
         {
             GameManager.Instance.MisionesState = Misiones.BusquedaPihuchen;
+            cuatrerosDestruidos = true;
             Debug.Log("Cambiando Conversación: Misión busqueda Pihuchen activada.");
             
             // Desactivamos este script para que no siga evaluando
